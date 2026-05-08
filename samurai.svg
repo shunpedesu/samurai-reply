@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 640">
+  <defs>
+    <style>
+      .g  { fill: #c8a040; }
+      .gd { fill: none; stroke: #7a5c18; stroke-width: 2; }
+      .gl { fill: none; stroke: #7a5c18; stroke-width: 1.2; }
+    </style>
+  </defs>
+
+  <!-- ════ KATANA IN SAYA (scabbard at left hip) ════ -->
+  <path class="g" d="M97 268 L108 258 L52 492 L40 500 Z"/>
+  <ellipse class="g" cx="100" cy="263" rx="18" ry="8" transform="rotate(-28 100 263)"/>
+  <!-- tsuka / handle -->
+  <path class="g" d="M103 252 L116 240 L130 262 L117 274 Z"/>
+  <line class="gl" x1="105" y1="255" x2="115" y2="245"/>
+  <line class="gl" x1="110" y1="260" x2="120" y2="250"/>
+  <line class="gl" x1="115" y1="265" x2="125" y2="255"/>
+  <line class="gl" x1="120" y1="270" x2="128" y2="261"/>
+
+  <!-- ════ HAKAMA ════ -->
+  <path class="g" d="
+    M 90 332 L 210 332
+    Q 228 350 256 598
+    L 174 598 Q 163 495 150 472
+    Q 137 495 126 598
+    L 44  598 Q 72 350 90 332 Z"/>
+  <line class="gd" x1="150" y1="332" x2="150" y2="472"/>
+  <line class="gl" x1="124" y1="340" x2="106" y2="598"/>
+  <line class="gl" x1="176" y1="340" x2="194" y2="598"/>
+
+  <!-- feet -->
+  <ellipse class="g" cx="74"  cy="605" rx="32" ry="12"/>
+  <ellipse class="g" cx="226" cy="605" rx="32" ry="12"/>
+
+  <!-- ════ KOSHI (hip belt) ════ -->
+  <path class="g" d="M84 303 L216 303 L220 338 L80 338 Z"/>
+
+  <!-- ════ DO (chest armor) ════ -->
+  <path class="g" d="M88 152 L212 152 L218 306 L82 306 Z"/>
+  <line class="gd" x1="88"  y1="183" x2="212" y2="183"/>
+  <line class="gd" x1="87"  y1="213" x2="213" y2="213"/>
+  <line class="gd" x1="86"  y1="243" x2="214" y2="243"/>
+  <line class="gd" x1="85"  y1="273" x2="215" y2="273"/>
+  <line class="gl" x1="150" y1="152" x2="150" y2="306"/>
+
+  <!-- ════ SODE LEFT ════ -->
+  <path class="g" d="M40 142 L90 142 L90 248 L44 236 Z"/>
+  <line class="gd" x1="41" y1="164" x2="90" y2="164"/>
+  <line class="gd" x1="41" y1="188" x2="90" y2="188"/>
+  <line class="gd" x1="42" y1="212" x2="89" y2="210"/>
+  <line class="gl" x1="43" y1="234" x2="87" y2="230"/>
+
+  <!-- ════ SODE RIGHT ════ -->
+  <path class="g" d="M210 142 L260 142 L256 236 L210 248 Z"/>
+  <line class="gd" x1="210" y1="164" x2="259" y2="164"/>
+  <line class="gd" x1="210" y1="188" x2="259" y2="188"/>
+  <line class="gd" x1="211" y1="210" x2="258" y2="212"/>
+  <line class="gl" x1="213" y1="230" x2="257" y2="234"/>
+
+  <!-- ════ ARMS (kote) ════ -->
+  <path class="g" d="M40 150 L90 150 L90 316 L40 308 Z"/>
+  <line class="gl" x1="40" y1="262" x2="90" y2="266"/>
+  <line class="gl" x1="40" y1="286" x2="90" y2="290"/>
+  <path class="g" d="M210 150 L260 150 L260 308 L210 316 Z"/>
+  <line class="gl" x1="210" y1="266" x2="260" y2="262"/>
+  <line class="gl" x1="210" y1="290" x2="260" y2="286"/>
+
+  <!-- fists -->
+  <path class="g" d="M32 307 Q30 322 40 330 Q56 337 66 326 Q72 315 62 306 Z"/>
+  <path class="g" d="M268 307 Q270 322 260 330 Q244 337 234 326 Q228 315 238 306 Z"/>
+
+  <!-- ════ NECK + HEAD ════ -->
+  <rect class="g" x="134" y="126" width="32" height="30" rx="5"/>
+  <ellipse class="g" cx="150" cy="100" rx="32" ry="30" opacity="0.6"/>
+
+  <!-- ════ KABUTO BOWL ════ -->
+  <!-- shikoro LEFT (neck guard plates) -->
+  <path class="g" d="M93 110 Q60 116 56 148 L80 138 Z"/>
+  <path class="g" d="M56 148 Q46 176 52 200 L78 182 Z"/>
+  <path class="g" d="M52 200 Q46 224 56 244 L83 224 Z"/>
+  <!-- shikoro RIGHT -->
+  <path class="g" d="M207 110 Q240 116 244 148 L220 138 Z"/>
+  <path class="g" d="M244 148 Q254 176 248 200 L222 182 Z"/>
+  <path class="g" d="M248 200 Q254 224 244 244 L217 224 Z"/>
+
+  <!-- Main bowl -->
+  <path class="g" d="M 90 118 Q 86 58 150 50 Q 214 58 210 118 Q 190 130 150 133 Q 110 130 90 118 Z"/>
+  <!-- Fukigaeshi (side flaps turned back) -->
+  <path class="g" d="M  90 98 Q 70 85 74 60 Q 83 72 93 88 Z"/>
+  <path class="g" d="M 210 98 Q 230 85 226 60 Q 217 72 207 88 Z"/>
+  <!-- Bowl brow line -->
+  <path fill="none" stroke="#7a5c18" stroke-width="2" d="M 90 118 Q 150 125 210 118"/>
+
+  <!-- ════ MAEDATE — crescent moon crest ════ -->
+  <!--
+    Two-horn crescent: outer teardrop minus inner teardrop, offset left.
+    We use a mask-like approach: gold outer shape, then dark inner shape on top.
+  -->
+  <!-- Outer crescent body -->
+  <path class="g" d="
+    M 125 52 Q 108 28 120  8
+    Q 134 -4 150  0
+    Q 166 -4 180  8
+    Q 192 28 175 52
+    Q 163 42 150 40
+    Q 137 42 125 52 Z"/>
+  <!-- Dark inner oval to carve crescent (offset right to create crescent facing left) -->
+  <path d="
+    M 134 50 Q 122 30 132 14
+    Q 140  5 150  7
+    Q 160  5 168 14
+    Q 178 30 166 50
+    Q 158 42 150 40
+    Q 142 42 134 50 Z"
+    fill="#110900" opacity="0.9"/>
+  <!-- Maedate base -->
+  <rect class="g" x="140" y="49" width="20" height="10" rx="2"/>
+
+  <!-- Hachimanza (top rivet) -->
+  <circle class="g" cx="150" cy="51" r="6"/>
+  <circle fill="#7a5c18" cx="150" cy="51" r="3"/>
+
+</svg>

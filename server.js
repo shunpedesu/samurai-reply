@@ -167,7 +167,10 @@ Return ONLY valid JSON, no other text:
       }),
     });
 
-    if (!response.ok) throw new Error(`Anthropic API error: ${response.status}`);
+    if (!response.ok) {
+      const errBody = await response.text().catch(() => '');
+      throw new Error(`Anthropic API error: ${response.status} — ${errBody}`);
+    }
     const data = await response.json();
     const raw = data.content?.[0]?.text || '';
     const match = raw.match(/\{[\s\S]*\}/);
@@ -311,6 +314,7 @@ app.post('/api/extract-image', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 app.get('/sw.js',        (req, res) => res.sendFile(path.join(__dirname, 'sw.js')));
 app.get('/manifest.json',(req, res) => res.sendFile(path.join(__dirname, 'manifest.json')));
+app.get('/samurai.svg',  (req, res) => res.sendFile(path.join(__dirname, 'samurai.svg')));
 app.get('*',             (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 // ─────────────────────────────────────────────────────────────────────────────
