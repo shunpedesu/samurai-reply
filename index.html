@@ -811,10 +811,13 @@ async function extractText(file) {
       body: JSON.stringify({ image: b64, mediaType: file.type || 'image/jpeg' }),
     });
 
-    if (!resp.ok) throw new Error('API ' + resp.status);
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData.error || ('API ' + resp.status));
+    }
     const data = await resp.json();
     const extracted = data.text?.trim() || '';
-    if (!extracted) throw new Error('No text found');
+    if (!extracted) throw new Error('No text found in image');
 
     imgExtracted = extracted;
     document.getElementById('msg').value = extracted;

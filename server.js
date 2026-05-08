@@ -32,7 +32,7 @@ app.use(cors({
 app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
 
 // ── JSON for everything else ──────────────────────────────────────────────────
-app.use(express.json());
+app.use(express.json({ limit: '20mb' }));
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. GET /api/stripe/link
@@ -298,7 +298,10 @@ app.post('/api/extract-image', async (req, res) => {
       }),
     });
 
-    if (!response.ok) throw new Error('Anthropic API error ' + response.status);
+    if (!response.ok) {
+      const errBody = await response.text().catch(() => '');
+      throw new Error(`Anthropic API error: ${response.status} — ${errBody}`);
+    }
     const data = await response.json();
     const text = data.content?.[0]?.text?.trim() || '';
     res.json({ text });
