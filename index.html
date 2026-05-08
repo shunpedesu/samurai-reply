@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samurai Reply — The reply you couldn't write.</title>
+<meta name="description" content="Paste any awkward message. Get 5 AI-powered replies instantly — polished, honest, rage, one-liner, and samurai. $9.99 lifetime.">
+<meta property="og:title" content="Samurai Reply — The reply you couldn't write.">
+<meta property="og:description" content="5 AI replies for any awkward message. Polished · Honest · Rage · One liner · Samurai. Try free.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Samurai Reply — The reply you couldn't write.">
+<meta name="twitter:description" content="5 AI replies for any awkward message. One of them is from a samurai.">
+<link rel="manifest" href="/manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Samurai Reply">
+<meta name="theme-color" content="#0a0a0e">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0e'/><text y='24' x='3' font-size='22'>⚡</text></svg>">
+<!-- Samurai Reply config: set this to your backend URL in production -->
+<script>
+  const API_BASE = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000'
+    : '';  // same origin in production (Vercel/Netlify)
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0e;
+  --surface: #111118;
+  --surface2: #1a1a24;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #e8e4dc;
+  --muted: #666070;
+  --neon-r: #ff2d55;
+  --neon-g: #00ff88;
+  --neon-b: #00cfff;
+  --neon-y: #ffd60a;
+  --neon-p: #bf5af2;
+  --rage: #ff3b1a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', monospace;
+  min-height: 100vh;
+  cursor: default;
+}
+
+/* scanline effect */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* noise grain */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.6;
+}
+
+/* NAV */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(10,10,14,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.5rem; height: 52px;
+}
+
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  text-shadow: 0 0 20px rgba(255,45,85,0.6), 0 0 40px rgba(255,45,85,0.3);
+}
+.logo em { font-style: normal; color: var(--neon-r); }
+
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-uses {
+  font-size: 0.6rem; color: var(--muted); letter-spacing: 0.08em;
+  line-height: 2;
+}
+.pro-btn {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 700;
+  background: transparent;
+  border: 1px solid var(--neon-y);
+  color: var(--neon-y);
+  padding: 6px 14px; border-radius: 4px;
+  cursor: pointer; letter-spacing: 0.06em;
+  text-shadow: 0 0 8px rgba(255,214,10,0.5);
+  box-shadow: 0 0 12px rgba(255,214,10,0.15), inset 0 0 12px rgba(255,214,10,0.05);
+  transition: all 0.15s;
+}
+.pro-btn:hover {
+  background: rgba(255,214,10,0.1);
+  box-shadow: 0 0 20px rgba(255,214,10,0.3), inset 0 0 20px rgba(255,214,10,0.08);
+}
+
+/* HERO */
+.hero {
+  max-width: 680px; margin: 0 auto;
+  padding: 3rem 1.5rem 0;
+  position: relative; z-index: 1;
+}
+
+.hero-top {
+  display: flex; align-items: baseline; gap: 12px;
+  margin-bottom: 0.3rem;
+}
+.hero-label {
+  font-size: 0.6rem; color: var(--neon-g); letter-spacing: 0.18em; line-height: 2;
+  text-shadow: 0 0 8px rgba(0,255,136,0.5);
+}
+
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.2rem, 9vw, 5.5rem);
+  line-height: 0.92;
+  letter-spacing: 0.03em;
+  margin-bottom: 1rem;
+}
+.h1-white { color: var(--text); display: block; }
+.h1-red {
+  color: var(--neon-r); display: block;
+  text-shadow: 0 0 30px rgba(255,45,85,0.7), 0 0 60px rgba(255,45,85,0.3);
+}
+
+.hero-desc {
+  font-size: 0.78rem; color: #887e90; line-height: 1.8;
+  max-width: 420px; margin-bottom: 1.5rem;
+}
+
+/* TYPE BADGES */
+.type-strip {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 2rem;
+}
+.tbadge {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em;
+  padding: 4px 12px; border-radius: 2px;
+  border: 1px solid; line-height: 1.8;
+  white-space: nowrap;
+}
+.tb-pro    { color: var(--neon-g);  border-color: var(--neon-g);  background: rgba(0,255,136,0.06);  text-shadow: 0 0 6px rgba(0,255,136,0.4); }
+.tb-honest { color: var(--neon-b);  border-color: var(--neon-b);  background: rgba(0,207,255,0.06);  text-shadow: 0 0 6px rgba(0,207,255,0.4); }
+.tb-rage   { color: var(--rage);    border-color: var(--rage);    background: rgba(255,59,26,0.06);  text-shadow: 0 0 6px rgba(255,59,26,0.4); }
+.tb-ghost  { color: var(--muted);   border-color: var(--muted);   background: rgba(102,96,112,0.08); }
+.tb-sam    { color: var(--neon-p);  border-color: var(--neon-p);  background: rgba(191,90,242,0.06); text-shadow: 0 0 6px rgba(191,90,242,0.4); font-family: 'Noto Serif JP', serif; }
+
+/* METER */
+.meter-wrap {
+  max-width: 680px; margin: 0 auto;
+  padding: 0 1.5rem 0; position: relative; z-index: 1;
+}
+.meter-box {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: flex; align-items: center; gap: 12px;
+}
+.meter-lbl { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.1em; line-height: 2; white-space: nowrap; }
+.meter-track { flex: 1; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+.meter-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; background: var(--neon-g); box-shadow: 0 0 6px var(--neon-g); }
+.meter-fill.warn { background: var(--neon-y); box-shadow: 0 0 6px var(--neon-y); }
+.meter-fill.low  { background: var(--rage);   box-shadow: 0 0 6px var(--rage); }
+.meter-num { font-size: 0.62rem; font-weight: 700; color: var(--text); white-space: nowrap; letter-spacing: 0.06em; }
+.meter-up {
+  font-size: 0.58rem; font-weight: 700;
+  background: none; border: 1px solid var(--border2); color: var(--muted);
+  padding: 4px 12px; border-radius: 4px; cursor: pointer;
+  transition: all 0.13s; letter-spacing: 0.06em; line-height: 1.8; white-space: nowrap;
+}
+.meter-up:hover { border-color: var(--neon-y); color: var(--neon-y); }
+
+/* MAIN */
+.main { max-width: 680px; margin: 0 auto; padding: 0 1.5rem 5rem; position: relative; z-index: 1; }
+
+.sec-label {
+  font-size: 0.58rem; color: var(--muted); letter-spacing: 0.14em;
+  margin-top: 2rem; margin-bottom: 10px; line-height: 2;
+  display: flex; align-items: center; gap: 8px;
+}
+.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* PRESETS */
+.presets { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 1.4rem; }
+.preset {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
+  background: var(--surface); border: 1px solid var(--border2);
+  color: #a098b0; padding: 7px 14px; border-radius: 4px;
+  cursor: pointer; transition: all 0.13s; letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.preset:hover { border-color: var(--neon-b); color: var(--neon-b); background: rgba(0,207,255,0.05); }
+
+/* INPUT AREA */
+.input-panel {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-panel:focus-within {
+  border-color: rgba(0,207,255,0.4);
+  box-shadow: 0 0 0 3px rgba(0,207,255,0.06), 0 0 20px rgba(0,207,255,0.05);
+}
+
+/* Tab bar */
+.input-tabs {
+  display: flex; border-bottom: 1px solid var(--border);
+}
+.itab {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 700;
+  background: none; border: none; color: var(--muted);
+  padding: 9px 16px; cursor: pointer; letter-spacing: 0.08em;
+  transition: all 0.13s; border-bottom: 2px solid transparent;
+  line-height: 1.8; white-space: nowrap;
+}
+.itab.active { color: var(--neon-b); border-bottom-color: var(--neon-b); background: rgba(0,207,255,0.04); }
+.itab:hover:not(.active) { color: var(--text); }
+
+/* Text pane */
+.pane { display: none; }
+.pane.active { display: block; }
+
+textarea {
+  width: 100%; border: none; outline: none; background: transparent;
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; line-height: 1.85;
+  color: var(--text); padding: 1rem 1rem 0.5rem; resize: none; min-height: 130px;
+}
+textarea::placeholder { color: var(--muted); }
+
+/* Image upload pane */
+.upload-area {
+  min-height: 130px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 1.5rem; cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+}
+.upload-area:hover { background: rgba(0,207,255,0.03); }
+.upload-area input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.upload-icon {
+  width: 36px; height: 36px; border: 1.5px solid var(--border2);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; color: var(--muted);
+}
+.upload-text { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.06em; text-align: center; line-height: 1.8; }
+.upload-sub { font-size: 0.6rem; color: #443e50; letter-spacing: 0.06em; line-height: 2; }
+
+/* Preview */
+.img-preview-wrap {
+  display: none; padding: 10px; position: relative;
+}
+.img-preview-wrap.show { display: block; }
+.img-preview {
+  width: 100%; max-height: 200px; object-fit: cover;
+  border-radius: 4px; display: block;
+}
+.img-clear {
+  position: absolute; top: 16px; right: 16px;
+  background: rgba(10,10,14,0.8); border: 1px solid var(--border2);
+  color: var(--muted); font-size: 0.65rem; padding: 3px 8px;
+  border-radius: 4px; cursor: pointer; font-family: 'IBM Plex Mono', monospace;
+}
+.img-clear:hover { color: var(--neon-r); border-color: var(--neon-r); }
+.ocr-status {
+  font-size: 0.6rem; color: var(--muted); padding: 0 10px 8px;
+  letter-spacing: 0.06em; line-height: 2;
+}
+.ocr-status.ok { color: var(--neon-g); text-shadow: 0 0 6px rgba(0,255,136,0.4); }
+.ocr-status.err { color: var(--rage); }
+
+/* Input footer */
+.input-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-top: 1px solid var(--border); gap: 10px;
+}
+.char-ct { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.06em; line-height: 2; }
+.gen-btn {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 700;
+  background: var(--neon-r); color: #fff; border: none;
+  border-radius: 4px; padding: 10px 22px; cursor: pointer;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 10px rgba(255,45,85,0.5);
+  box-shadow: 0 0 20px rgba(255,45,85,0.25);
+  transition: all 0.15s; white-space: nowrap;
+}
+.gen-btn:hover { box-shadow: 0 0 30px rgba(255,45,85,0.4); transform: translateY(-1px); }
+.gen-btn:active { transform: translateY(0); }
+.gen-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* LOADING */
+.ld { display: none; align-items: center; gap: 12px; padding: 1.8rem 0 0.5rem; }
+.ld.on { display: flex; }
+.ld-bar {
+  flex: 1; height: 2px; background: var(--border);
+  border-radius: 1px; overflow: hidden;
+}
+.ld-bar-fill {
+  height: 100%; width: 0; background: var(--neon-r);
+  box-shadow: 0 0 8px var(--neon-r);
+  animation: ldprogress 3s ease-in-out infinite;
+}
+@keyframes ldprogress {
+  0%   { width: 0; }
+  50%  { width: 80%; }
+  90%  { width: 95%; }
+  100% { width: 95%; }
+}
+.ld-txt { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.08em; white-space: nowrap; line-height: 2; }
+
+/* ERROR */
+.err {
+  display: none; background: rgba(255,59,26,0.08);
+  border: 1px solid rgba(255,59,26,0.3);
+  border-radius: 6px; padding: 0.9rem 1rem;
+  color: #ff7055; font-size: 0.75rem; margin-top: 1rem; line-height: 1.7;
+}
+.err.on { display: block; }
+
+/* RESULTS */
+.res { display: none; margin-top: 2rem; }
+.res.on { display: block; }
+.res-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+}
+.res-lbl { font-size: 0.58rem; color: var(--neon-g); letter-spacing: 0.14em; line-height: 2; text-shadow: 0 0 6px rgba(0,255,136,0.4); }
+.retry-btn {
+  font-size: 0.6rem; background: none; border: 1px solid var(--border2);
+  color: var(--muted); padding: 5px 12px; border-radius: 4px;
+  cursor: pointer; transition: all 0.13s; letter-spacing: 0.06em; line-height: 1.8;
+}
+.retry-btn:hover { color: var(--text); border-color: var(--border2); }
+
+/* CARDS */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media(max-width: 500px) { .grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 6px; display: flex; flex-direction: column;
+  animation: cardIn 0.35s ease both;
+  position: relative; overflow: hidden;
+}
+
+/* colored top accent line */
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.card-pro::before    { background: var(--neon-g); box-shadow: 0 0 8px var(--neon-g); }
+.card-honest::before { background: var(--neon-b); box-shadow: 0 0 8px var(--neon-b); }
+.card-rage::before   { background: var(--rage);   box-shadow: 0 0 8px var(--rage); }
+.card-ghost::before  { background: var(--muted); }
+.card-sam::before    { background: var(--neon-p); box-shadow: 0 0 8px var(--neon-p); }
+
+.card:nth-child(1){animation-delay:0.04s}
+.card:nth-child(2){animation-delay:0.09s}
+.card:nth-child(3){animation-delay:0.14s}
+.card:nth-child(4){animation-delay:0.19s}
+.card:nth-child(5){animation-delay:0.24s}
+@keyframes slideUp { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+@keyframes cardIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* rage & samurai full width */
+.card.card-rage { grid-column: 1 / -1; }
+.card.card-sam  { grid-column: 1 / -1; }
+
+/* Rage stamp */
+.rage-stamp {
+  position: absolute; top: 10px; right: 10px;
+  font-size: 0.52rem; font-weight: 700; letter-spacing: 0.1em;
+  background: var(--rage); color: #fff;
+  padding: 2px 8px; border-radius: 2px;
+  text-shadow: none;
+  box-shadow: 0 0 10px rgba(255,59,26,0.4);
+}
+
+/* card header */
+.card-head {
+  padding: 12px 13px 9px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; flex-wrap: wrap; gap: 6px;
+}
+.cpill {
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.06em;
+  padding: 3px 9px; border-radius: 2px; border: 1px solid;
+  white-space: nowrap; flex-shrink: 0; line-height: 1.8;
+}
+.cp-pro    { color: var(--neon-g); border-color: rgba(0,255,136,0.4);  background: rgba(0,255,136,0.06); }
+.cp-honest { color: var(--neon-b); border-color: rgba(0,207,255,0.4);  background: rgba(0,207,255,0.06); }
+.cp-rage   { color: var(--rage);   border-color: rgba(255,59,26,0.5);  background: rgba(255,59,26,0.06); }
+.cp-ghost  { color: var(--muted);  border-color: rgba(102,96,112,0.4); background: rgba(102,96,112,0.06); }
+.cp-sam    { color: var(--neon-p); border-color: rgba(191,90,242,0.4); background: rgba(191,90,242,0.06); font-family: 'Noto Serif JP', serif; }
+
+.ctone { font-size: 0.62rem; color: var(--muted); line-height: 1.8; word-break: break-word; }
+
+/* card body */
+.ctext {
+  padding: 12px 13px 10px; font-size: 0.82rem; line-height: 1.85;
+  color: var(--text); flex: 1;
+  word-break: break-word; overflow-wrap: break-word;
+}
+.card-sam .ctext { font-family: 'Noto Serif JP', serif; color: #d4c8e8; font-size: 0.8rem; line-height: 2; }
+.card-rage .ctext { color: #ffb0a0; }
+
+/* card footer */
+.cfoot {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 12px 11px; flex-wrap: wrap; gap: 6px;
+}
+.cwarn { font-size: 0.56rem; color: rgba(255,59,26,0.5); letter-spacing: 0.06em; line-height: 2; }
+.ccopy {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500;
+  background: none; border: 1px solid var(--border2); color: var(--muted);
+  padding: 5px 13px; border-radius: 4px; cursor: pointer;
+  transition: all 0.13s; letter-spacing: 0.04em; line-height: 1.8; white-space: nowrap;
+}
+.ccopy:hover { color: var(--text); border-color: var(--border2); }
+.ccopy.ok     { border-color: var(--neon-g); color: var(--neon-g); text-shadow: 0 0 6px rgba(0,255,136,0.4); }
+.ccopy.rage-ok{ border-color: var(--rage);   color: var(--rage);   text-shadow: 0 0 6px rgba(255,59,26,0.4); }
+
+/* PAYWALL */
+.wall-bg {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  align-items: center; justify-content: center; padding: 1.5rem;
+}
+.wall-bg.on { display: flex; }
+.wall {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 12px; padding: 2rem; max-width: 400px; width: 100%;
+  animation: popIn 0.2s ease both;
+  position: relative;
+}
+@keyframes popIn { from{opacity:0;transform:scale(0.96)} to{opacity:1;transform:scale(1)} }
+
+.wall-top { margin-bottom: 1.25rem; }
+.wall-eye { font-size: 0.58rem; color: var(--neon-r); letter-spacing: 0.14em; margin-bottom: 8px; line-height: 2; text-shadow: 0 0 8px rgba(255,45,85,0.4); }
+.wall h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.04em; line-height: 1; margin-bottom: 6px; }
+.wall h2 em { font-style: normal; color: var(--neon-y); text-shadow: 0 0 16px rgba(255,214,10,0.5); }
+.wall-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.75; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+.wall-no {
+  width: 100%; background: none; border: none; font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem; color: var(--muted); cursor: pointer; padding: 4px;
+  transition: color 0.13s; letter-spacing: 0.04em; line-height: 2;
+}
+.wall-no:hover { color: var(--text); }
+
+/* LIFETIME CARD */
+.lifetime-card {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--neon-y);
+  border-radius: 10px; padding: 1.25rem;
+  margin: 1.25rem 0;
+  box-shadow: 0 0 24px rgba(255,214,10,0.08), inset 0 0 24px rgba(255,214,10,0.03);
+}
+.lc-left { flex-shrink: 0; }
+.lc-badge {
+  font-size: 0.52rem; font-weight: 700; letter-spacing: 0.1em;
+  background: var(--neon-y); color: #0a0a0e;
+  padding: 2px 8px; border-radius: 2px;
+  display: inline-block; margin-bottom: 8px;
+}
+.lc-price {
+  font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem;
+  color: var(--neon-y); line-height: 1;
+  text-shadow: 0 0 20px rgba(255,214,10,0.5);
+}
+.lc-once { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.06em; line-height: 2; margin-top: 2px; }
+.lc-feats { flex: 1; display: flex; flex-direction: column; gap: 4px; padding-top: 4px; }
+.lc-feat { font-size: 0.65rem; color: var(--text); letter-spacing: 0.04em; line-height: 2; }
+
+
+
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="logo">Samurai<em>Reply</em></span>
+  <div class="nav-right">
+    <span class="nav-uses" id="nav-uses">3 free left</span>
+    <button class="pro-btn" onclick="openWall()">UNLOCK $9.99</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-top">
+    <span class="hero-label">// PASTE · GENERATE · SEND OR DON'T</span>
+  </div>
+  <h1>
+    <span class="h1-white">THE REPLY</span>
+    <span class="h1-red">YOU COULDN'T WRITE.</span>
+  </h1>
+  <p class="hero-desc">Paste any awkward text — or screenshot it. Get 5 replies in seconds. From diplomatic to unhinged. One from a samurai.</p>
+  <div class="type-strip">
+    <span class="tbadge tb-pro">✓ POLISHED</span>
+    <span class="tbadge tb-honest">✗ HONEST</span>
+    <span class="tbadge tb-rage">💢 RAGE (DO NOT SEND)</span>
+    <span class="tbadge tb-ghost">— ONE LINER</span>
+    <span class="tbadge tb-sam">⚔ 侍 SAMURAI</span>
+  </div>
+</section>
+
+<div class="meter-wrap">
+  <div class="meter-box">
+    <span class="meter-lbl">FREE USES</span>
+    <div class="meter-track"><div class="meter-fill" id="mfill" style="width:100%"></div></div>
+    <span class="meter-num" id="mnum">3 / 3</span>
+    <button class="meter-up" onclick="openWall()">UNLOCK $9.99 →</button>
+  </div>
+</div>
+
+<div class="main">
+  <p class="sec-label">PRESETS</p>
+  <div class="presets">
+    <button class="preset" onclick="loadP(0)">Left on read</button>
+    <button class="preset" onclick="loadP(1)">Flaky friend cancelled</button>
+    <button class="preset" onclick="loadP(2)">Impossible boss request</button>
+    <button class="preset" onclick="loadP(3)">Ex texted out of nowhere</button>
+    <button class="preset" onclick="loadP(4)">Friend won't stop venting</button>
+  </div>
+
+  <p class="sec-label">INPUT</p>
+  <div class="input-panel">
+    <!-- Tab bar -->
+    <div class="input-tabs">
+      <button class="itab active" onclick="switchTab('text',this)">✎ TYPE / PASTE</button>
+      <button class="itab" onclick="switchTab('image',this)">⊞ SCREENSHOT</button>
+    </div>
+
+    <!-- Text pane -->
+    <div class="pane active" id="pane-text">
+      <textarea id="msg" placeholder="Paste the message you received…" oninput="upd()"></textarea>
+    </div>
+
+    <!-- Image pane -->
+    <div class="pane" id="pane-image">
+      <div class="upload-area" id="drop-area">
+        <input type="file" accept="image/*" id="img-input" onchange="handleImg(this.files[0])">
+        <div class="upload-icon">⊞</div>
+        <div class="upload-text">TAP TO UPLOAD SCREENSHOT</div>
+        <div class="upload-sub">PNG · JPG · WEBP — text will be extracted automatically</div>
+      </div>
+      <div class="img-preview-wrap" id="preview-wrap">
+        <img class="img-preview" id="preview-img" src="" alt="">
+        <button class="img-clear" onclick="clearImg()">✕ CLEAR</button>
+      </div>
+      <div class="ocr-status" id="ocr-status"></div>
+    </div>
+
+    <div class="input-foot">
+      <span class="char-ct" id="cc">0 CHARS</span>
+      <button class="gen-btn" id="gbtn" onclick="gen()">GENERATE 5 REPLIES →</button>
+    </div>
+  </div>
+
+  <div class="ld" id="ld">
+    <div class="ld-bar"><div class="ld-bar-fill"></div></div>
+    <span class="ld-txt" id="ldtxt">THINKING…</span>
+  </div>
+  <div class="err" id="err"></div>
+
+  <div class="res" id="res">
+    <div class="res-header">
+      <span class="res-lbl">// 5 REPLIES READY</span>
+      <button class="retry-btn" onclick="rst()">← TRY ANOTHER</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</div>
+
+<!-- PAYWALL -->
+<div class="wall-bg" id="wall-bg" onclick="bgDismiss(event)">
+  <div class="wall">
+    <div class="wall-top">
+      <p class="wall-eye">// FREE LIMIT REACHED — 3/3 USED</p>
+      <h2>UNLOCK<br><em>REPLYLAB</em></h2>
+      <p class="wall-desc">One payment. Use it forever. No subscriptions, no monthly bills.</p>
+    </div>
+    <div class="lifetime-card">
+      <div class="lc-left">
+        <div class="lc-badge">LIFETIME ACCESS</div>
+        <div class="lc-price">$9.99</div>
+        <div class="lc-once">one-time · yours forever</div>
+      </div>
+      <div class="lc-feats">
+        <div class="lc-feat">∞ Unlimited replies</div>
+        <div class="lc-feat">⊞ Screenshot reader</div>
+        <div class="lc-feat">⚔ All 5 reply tones</div>
+        <div class="lc-feat">⚡ Priority generation</div>
+        <div class="lc-feat">🔮 Future updates free</div>
+      </div>
+    </div>
+    <a class="cta" href="#" id="stripe-link" onclick="handlePayment(event)">
+      PAY $9.99 — UNLOCK FOREVER →
+    </a>
+    <button class="wall-no" onclick="closeWall()">No thanks, I'll stick with 3 free per day</button>
+  </div>
+</div>
+
+<script>
+const PRESETS=[
+  "Hey, I saw you read my message from yesterday but never replied. Is everything okay? I was just asking if you wanted to hang this weekend, no pressure.",
+  "Ugh I'm so sorry, I totally can't make it tonight. Something came up last minute. You know how it is! Rain check?",
+  "Hey can you have the full Q3 report done by 8am tomorrow? Also you'll need to present it to the exec team. Really appreciate it! — sent at 7:30pm",
+  "Heyyyy stranger 👀 it's been forever. How are you doing? I know this is super random but I was literally just thinking about you lol",
+  "I genuinely cannot deal anymore. My job is a nightmare, my roommate is insufferable, and I think my cat hates me. Can we talk? I really need to vent."
+];
+const TYPES=[
+  {key:'pro',    cls:'card-pro',    pill:'cp-pro',    label:'✓ POLISHED',   tone:'safe · diplomatic · no drama'},
+  {key:'honest', cls:'card-honest', pill:'cp-honest', label:'✗ HONEST',     tone:'what you actually think'},
+  {key:'rage',   cls:'card-rage',   pill:'cp-rage',   label:'💢 RAGE',      tone:'DO NOT SEND THIS'},
+  {key:'ghost',  cls:'card-ghost',  pill:'cp-ghost',  label:'— ONE LINER',  tone:'minimum viable reply'},
+  {key:'samurai',cls:'card-sam',    pill:'cp-sam',    label:'⚔ 侍 SAMURAI', tone:'honor · steel · ancient wisdom'},
+];
+const LOADS=["THINKING…","SUMMONING THE SAMURAI…","CHANNELING YOUR RAGE…","FINDING THE ONE-LINER…","ALMOST DONE…"];
+
+const FREE_MAX=3;
+let used=0;
+let imgExtracted='';
+let activeTab='text';
+
+// --- tab switch ---
+function switchTab(tab, btn) {
+  activeTab = tab;
+  document.querySelectorAll('.itab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pane-'+tab).classList.add('active');
+  upd();
+}
+
+// --- image handling ---
+function handleImg(file) {
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  document.getElementById('preview-img').src = url;
+  document.getElementById('preview-wrap').classList.add('show');
+  document.getElementById('drop-area').style.display = 'none';
+  document.getElementById('ocr-status').textContent = '';
+  extractText(file);
+}
+
+async function extractText(file) {
+  const st = document.getElementById('ocr-status');
+  st.className = 'ocr-status';
+  st.textContent = '⟳ EXTRACTING TEXT…';
+
+  try {
+    // Convert to base64
+    const b64 = await new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result.split(',')[1]);
+      r.onerror = rej;
+      r.readAsDataURL(file);
+    });
+
+    const resp = await fetch(API_BASE + '/api/extract-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: b64, mediaType: file.type || 'image/jpeg' }),
+    });
+
+    if (!resp.ok) throw new Error('API ' + resp.status);
+    const data = await resp.json();
+    const extracted = data.text?.trim() || '';
+    if (!extracted) throw new Error('No text found');
+
+    imgExtracted = extracted;
+    document.getElementById('msg').value = extracted;
+    st.className = 'ocr-status ok';
+    st.textContent = '✓ TEXT EXTRACTED — switching to text tab';
+    upd();
+
+    // auto-switch to text tab after a beat
+    setTimeout(() => {
+      switchTab('text', document.querySelectorAll('.itab')[0]);
+    }, 900);
+
+  } catch(e) {
+    st.className = 'ocr-status err';
+    st.textContent = '✕ COULD NOT EXTRACT: ' + e.message;
+  }
+}
+
+function clearImg() {
+  document.getElementById('preview-img').src = '';
+  document.getElementById('preview-wrap').classList.remove('show');
+  document.getElementById('drop-area').style.display = '';
+  document.getElementById('ocr-status').textContent = '';
+  document.getElementById('img-input').value = '';
+  imgExtracted = '';
+  upd();
+}
+
+// --- drag & drop ---
+const dropArea = document.getElementById('drop-area');
+['dragover','dragenter'].forEach(e => dropArea.addEventListener(e, ev => { ev.preventDefault(); dropArea.style.background='rgba(0,207,255,0.05)'; }));
+['dragleave','drop'].forEach(e => dropArea.addEventListener(e, ev => { ev.preventDefault(); dropArea.style.background=''; }));
+dropArea.addEventListener('drop', ev => {
+  const f = ev.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) handleImg(f);
+});
+
+// --- utils ---
+function loadP(i){ document.getElementById('msg').value=PRESETS[i]; if(activeTab!=='text') switchTab('text', document.querySelectorAll('.itab')[0]); upd(); }
+function upd(){ document.getElementById('cc').textContent=document.getElementById('msg').value.length+' CHARS'; }
+function rst(){ document.getElementById('msg').value=''; document.getElementById('res').classList.remove('on'); document.getElementById('err').classList.remove('on'); document.getElementById('gbtn').disabled=false; upd(); }
+function openWall(){ document.getElementById('wall-bg').classList.add('on'); }
+function closeWall(){ document.getElementById('wall-bg').classList.remove('on'); }
+function bgDismiss(e){ if(e.target===document.getElementById('wall-bg')) closeWall(); }
+function fakeUpgrade(){
+  closeWall();
+  used=0;
+  updateMeter();
+  document.getElementById('gbtn').disabled=false;
+  // In production: verify Stripe webhook, then set localStorage flag
+  // localStorage.setItem('samurai-reply_pro', '1');
+  document.getElementById('nav-uses').textContent='∞ UNLOCKED';
+  document.getElementById('mnum').textContent='∞';
+  document.getElementById('mfill').style.width='100%';
+  document.getElementById('mfill').className='meter-fill';
+}
+
+function updateMeter(){
+  const left=Math.max(0,FREE_MAX-used);
+  const pct=(left/FREE_MAX)*100;
+  const f=document.getElementById('mfill');
+  f.style.width=pct+'%';
+  f.className='meter-fill'+(pct<=33?' low':pct<=66?' warn':'');
+  document.getElementById('mnum').textContent=left+' / '+FREE_MAX;
+  document.getElementById('nav-uses').textContent=left+' FREE LEFT';
+}
+
+// --- generate ---
+async function gen(){
+  const msg=document.getElementById('msg').value.trim();
+  if(!msg) return;
+  const isUnlocked = document.getElementById('nav-uses').textContent.includes('∞');
+  if(!isUnlocked && used>=FREE_MAX){ openWall(); return; }
+
+  document.getElementById('gbtn').disabled=true;
+  document.getElementById('ld').classList.add('on');
+  document.getElementById('res').classList.remove('on');
+  document.getElementById('err').classList.remove('on');
+
+  let li=0;
+  const iv=setInterval(()=>{ li=(li+1)%LOADS.length; document.getElementById('ldtxt').textContent=LOADS[li]; },1000);
+
+  try{
+    // Call our backend (handles rate limiting + Stripe unlock check)
+    const email = localStorage.getItem('samurai-reply_email') || '';
+    const r = await fetch(API_BASE + '/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg, email }),
+    });
+
+    if (r.status === 429) {
+      const data = await r.json();
+      clearInterval(iv);
+      document.getElementById('ld').classList.remove('on');
+      document.getElementById('gbtn').disabled = false;
+      openWall();
+      return;
+    }
+    if (!r.ok) throw new Error('API error ' + r.status);
+    const data = await r.json();
+    const p = data.replies;
+    if (data.unlocked) {
+      document.getElementById('nav-uses').textContent = '∞ UNLOCKED';
+    }
+
+    clearInterval(iv);
+    document.getElementById('ld').classList.remove('on');
+    used++; updateMeter();
+    const unlocked = document.getElementById('nav-uses').textContent.includes('∞');
+    if(!unlocked && used>=FREE_MAX) document.getElementById('gbtn').disabled=true;
+    else document.getElementById('gbtn').disabled=false;
+    render(p);
+    const ul = document.getElementById('nav-uses').textContent.includes('∞');
+    if(!ul && used>=FREE_MAX) setTimeout(openWall, 1800);
+
+  }catch(e){
+    clearInterval(iv);
+    document.getElementById('ld').classList.remove('on');
+    document.getElementById('gbtn').disabled=false;
+    const eb=document.getElementById('err');
+    eb.textContent='ERROR: '+e.message;
+    eb.classList.add('on');
+  }
+}
+
+function render(p){
+  const grid=document.getElementById('grid');
+  grid.innerHTML='';
+  TYPES.forEach(t=>{
+    const text=p[t.key]||'—';
+    const isRage=t.key==='rage';
+    const card=document.createElement('div');
+    card.className='card '+t.cls;
+    card.innerHTML=`
+      ${isRage?'<span class="rage-stamp">⚠ DO NOT SEND</span>':''}
+      <div class="card-head">
+        <span class="cpill ${t.pill}">${t.label}</span>
+        <span class="ctone">${t.tone}</span>
+      </div>
+      <div class="ctext">${esc(text)}</div>
+      <div class="cfoot">
+        ${isRage?'<span class="cwarn">for your eyes only</span>':'<span></span>'}
+        <button class="ccopy" data-text="${eA(text)}" data-rage="${isRage}" onclick="cp(this)">${isRage?'COPY ANYWAY 😈':'COPY'}</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  document.getElementById('res').classList.add('on');
+}
+
+function cp(btn){
+  navigator.clipboard.writeText(btn.dataset.text).then(()=>{
+    const r=btn.dataset.rage==='true';
+    btn.textContent=r?'COPIED 😈 GOOD LUCK':'COPIED ✓';
+    btn.classList.add(r?'rage-ok':'ok');
+    setTimeout(()=>{ btn.textContent=r?'COPY ANYWAY 😈':'COPY'; btn.classList.remove('rage-ok','ok'); },2200);
+  });
+}
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function eA(s){ return s.replace(/\\/g,'\\\\').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' '); }
+
+updateMeter();
+
+// ── Email collection & Stripe redirect ───────────────────────────────────────
+async function handlePayment(e) {
+  e.preventDefault();
+  const email = prompt('Enter your email to receive your unlock confirmation:');
+  if (!email || !email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  localStorage.setItem('samurai-reply_email', email);
+
+  // Get Stripe link from backend (pre-fills email)
+  try {
+    const r = await fetch(API_BASE + '/api/stripe/link?email=' + encodeURIComponent(email));
+    const { url } = await r.json();
+    window.location.href = url;
+  } catch {
+    // Fallback: open Stripe link directly
+    window.open('https://buy.stripe.com/YOUR_LINK', '_blank');
+  }
+}
+
+// ── Check unlock status on load (for returning paid users) ───────────────────
+async function checkUnlockOnLoad() {
+  const email = localStorage.getItem('samurai-reply_email');
+  if (!email) return;
+  try {
+    const r = await fetch(API_BASE + '/api/check-unlock', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const { unlocked } = await r.json();
+    if (unlocked) {
+      used = 0;
+      document.getElementById('nav-uses').textContent = '∞ UNLOCKED';
+      document.getElementById('mnum').textContent = '∞';
+      document.getElementById('mfill').style.width = '100%';
+      document.getElementById('gbtn').disabled = false;
+    }
+  } catch { /* silently fail */ }
+}
+
+// Check on page load
+checkUnlockOnLoad();
+
+</script>
+
+<script>
+// ── Service Worker registration ───────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(r => console.log('SW registered:', r.scope))
+      .catch(e => console.log('SW failed:', e));
+  });
+}
+
+// ── PWA Install banner ────────────────────────────────────────────────────────
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallBanner();
+});
+
+function showInstallBanner() {
+  // Only show once per session
+  if (sessionStorage.getItem('install-dismissed')) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'install-banner';
+  banner.innerHTML = `
+    <div style="
+      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      background:#1a1a24; border:1px solid rgba(255,214,10,0.4);
+      border-radius:10px; padding:12px 16px;
+      display:flex; align-items:center; gap:12px;
+      font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+      color:#e8e4dc; z-index:300; max-width:340px; width:90%;
+      box-shadow:0 0 24px rgba(255,214,10,0.1);
+      animation:slideUp .3s ease;
+    ">
+      <span style="font-size:1.4rem">⚡</span>
+      <div style="flex:1;line-height:1.7">
+        <div style="font-weight:700;letter-spacing:0.04em">ADD TO HOME SCREEN</div>
+        <div style="color:#666070;font-size:0.6rem;letter-spacing:0.06em">Use Samurai Reply like an app — no browser UI</div>
+      </div>
+      <button onclick="installApp()" style="
+        background:#ffd60a; color:#0a0a0e; border:none;
+        border-radius:5px; font-family:'IBM Plex Mono',monospace;
+        font-size:0.6rem; font-weight:700; padding:6px 12px;
+        cursor:pointer; letter-spacing:0.04em; white-space:nowrap;
+      ">INSTALL</button>
+      <button onclick="dismissInstall()" style="
+        background:none; border:none; color:#666070;
+        font-size:1rem; cursor:pointer; padding:0 2px; line-height:1;
+      ">✕</button>
+    </div>
+  `;
+  document.body.appendChild(banner);
+}
+
+async function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log('Install outcome:', outcome);
+  deferredPrompt = null;
+  dismissInstall();
+}
+
+function dismissInstall() {
+  sessionStorage.setItem('install-dismissed', '1');
+  const b = document.getElementById('install-banner');
+  if (b) b.remove();
+}
+
+// iOS Safari: show manual instruction (no beforeinstallprompt support)
+const isIos = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+const isInStandalone = window.matchMedia('(display-mode: standalone)').matches;
+if (isIos && !isInStandalone && !sessionStorage.getItem('install-dismissed')) {
+  setTimeout(() => {
+    const banner = document.createElement('div');
+    banner.id = 'install-banner';
+    banner.innerHTML = `
+      <div style="
+        position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+        background:#1a1a24; border:1px solid rgba(255,214,10,0.4);
+        border-radius:10px; padding:14px 16px;
+        font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+        color:#e8e4dc; z-index:300; max-width:340px; width:90%;
+        box-shadow:0 0 24px rgba(255,214,10,0.1);
+        animation:slideUp .3s ease; line-height:1.75;
+      ">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-weight:700;letter-spacing:0.06em">⚡ ADD TO HOME SCREEN</span>
+          <button onclick="dismissInstall()" style="background:none;border:none;color:#666070;font-size:1rem;cursor:pointer;">✕</button>
+        </div>
+        <div style="color:#9a9288;font-size:0.62rem;letter-spacing:0.04em">
+          Tap <strong style="color:#ffd60a">Share ↑</strong> then
+          <strong style="color:#ffd60a">"Add to Home Screen"</strong>
+          to use Samurai Reply like a native app.
+        </div>
+      </div>
+    `;
+    document.body.appendChild(banner);
+  }, 2000);
+}
+</script>
+
+</body>
+</html>
