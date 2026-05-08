@@ -917,7 +917,10 @@ async function gen(){
       openWall();
       return;
     }
-    if (!r.ok) throw new Error('API error ' + r.status);
+    if (!r.ok) {
+      const errData = await r.json().catch(() => ({}));
+      throw new Error(errData.error || ('API error ' + r.status));
+    }
     const data = await r.json();
 
     clearInterval(iv);
