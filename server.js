@@ -161,7 +161,7 @@ Return ONLY valid JSON, no other text:
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-3-haiku-20240307',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1200,
         messages: [{ role: 'user', content: prompt }],
       }),
@@ -286,7 +286,7 @@ app.post('/api/extract-image', async (req, res) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-3-haiku-20240307',
+        model: 'claude-sonnet-4-6',
         max_tokens: 500,
         messages: [{
           role: 'user',
@@ -306,24 +306,6 @@ app.post('/api/extract-image', async (req, res) => {
   } catch (err) {
     console.error('Extract image error:', err);
     res.status(500).json({ error: err.message });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// TEMP: GET /api/models — list available Anthropic models for this API key
-// ─────────────────────────────────────────────────────────────────────────────
-app.get('/api/models', async (req, res) => {
-  try {
-    const r = await fetch('https://api.anthropic.com/v1/models', {
-      headers: {
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-      },
-    });
-    const data = await r.json();
-    res.json(data);
-  } catch (e) {
-    res.status(500).json({ error: e.message });
   }
 });
 
