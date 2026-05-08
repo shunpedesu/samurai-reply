@@ -6,14 +6,5 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "/server.js" },
     { "src": "/(.*)",     "dest": "/index.html" }
-  ],
-  "env": {
-    "ANTHROPIC_API_KEY":      "@anthropic_api_key",
-    "STRIPE_SECRET_KEY":      "@stripe_secret_key",
-    "STRIPE_WEBHOOK_SECRET":  "@stripe_webhook_secret",
-    "STRIPE_PAYMENT_LINK":    "@stripe_payment_link",
-    "SUPABASE_URL":           "@supabase_url",
-    "SUPABASE_SERVICE_KEY":   "@supabase_service_key",
-    "APP_URL":                "@app_url"
-  }
+  ]
 }
