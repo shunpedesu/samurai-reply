@@ -4,7 +4,7 @@
  * API calls always go to network.
  */
 
-const CACHE = 'samurai-reply-v1';
+const CACHE = 'samurai-reply-v3';
 const SHELL = [
   '/',
   '/index.html',
