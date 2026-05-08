@@ -1,10 +1,10 @@
 /**
- * Samurai Reply — Backend Server
+ * Samurai Reply — Backend Server (Credit Edition)
  *
  * Endpoints:
- *   POST /api/generate          — AI reply generation (checks unlock status)
- *   POST /api/check-unlock      — check if email is unlocked
- *   POST /api/stripe/webhook    — Stripe payment webhook
+ *   POST /api/generate          — AI reply generation (credits or free quota)
+ *   POST /api/check-credits     — check remaining credits for email
+ *   POST /api/stripe/webhook    — Stripe payment webhook (+200 credits)
  *   GET  /api/stripe/link       — return Stripe Payment Link URL
  *   POST /api/extract-image     — OCR image via Claude
  */
@@ -45,20 +45,20 @@ app.get('/api/stripe/link', (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 2. POST /api/check-unlock
+// 2. POST /api/check-credits
 //    Body: { email: string }
-//    Returns: { unlocked: boolean }
+//    Returns: { credits: number }
 // ─────────────────────────────────────────────────────────────────────────────
-app.post('/api/check-unlock', async (req, res) => {
+app.post('/api/check-credits', async (req, res) => {
   const { email } = req.body;
-  if (!email) return res.json({ unlocked: false });
+  if (!email) return res.json({ credits: 0 });
 
   try {
     const { rows } = await pool.query(
-      'SELECT email FROM unlocked_users WHERE email = $1',
+      'SELECT credits FROM user_credits WHERE email = $1',
       [email.toLowerCase().trim()]
     );
-    res.json({ unlocked: rows.length > 0 });
+    res.json({ credits: parseInt(rows[0]?.credits || 0, 10) });
   } catch (err) {
     console.error('DB check error:', err);
     res.status(500).json({ error: 'DB error' });
@@ -68,8 +68,9 @@ app.post('/api/check-unlock', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // 3. POST /api/generate
 //    Body: { message: string, email?: string }
-//    Checks: free quota (3/day) or unlocked status
-//    Returns: { pro, honest, rage, ghost, samurai }
+//    Logic: if email has credits → deduct 1 credit
+//           else → check IP free quota (3/day)
+//    Returns: { replies, credits }
 // ─────────────────────────────────────────────────────────────────────────────
 app.post('/api/generate', async (req, res) => {
   const { message, email } = req.body;
@@ -78,22 +79,36 @@ app.post('/api/generate', async (req, res) => {
     return res.status(400).json({ error: 'Message too short' });
   }
 
-  // Check unlock status if email provided
-  let isUnlocked = false;
+  let creditsRemaining = 0;
+  let usedCredit = false;
+
+  // Check credit balance
   if (email) {
     try {
       const { rows } = await pool.query(
-        'SELECT email FROM unlocked_users WHERE email = $1',
+        'SELECT credits FROM user_credits WHERE email = $1',
         [email.toLowerCase().trim()]
       );
-      isUnlocked = rows.length > 0;
+      creditsRemaining = parseInt(rows[0]?.credits || 0, 10);
     } catch (err) {
-      console.error('Unlock check error:', err);
+      console.error('Credits check error:', err);
     }
   }
 
-  // Rate limit free users by IP
-  if (!isUnlocked) {
+  if (creditsRemaining > 0) {
+    // Deduct 1 credit
+    try {
+      const { rows } = await pool.query(
+        'UPDATE user_credits SET credits = credits - 1, updated_at = NOW() WHERE email = $1 RETURNING credits',
+        [email.toLowerCase().trim()]
+      );
+      creditsRemaining = parseInt(rows[0]?.credits || 0, 10);
+      usedCredit = true;
+    } catch (err) {
+      console.error('Credit deduction error:', err);
+    }
+  } else {
+    // Rate limit free users by IP
     const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
     const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
     const key = `free:${ip}:${today}`;
@@ -162,18 +177,29 @@ Return ONLY valid JSON, no other text:
     if (!match) throw new Error('Parse failed');
     const replies = JSON.parse(match[0]);
 
-    res.json({ replies, unlocked: isUnlocked });
+    res.json({ replies, credits: creditsRemaining, usedCredit });
 
   } catch (err) {
     console.error('Generate error:', err);
+    // If we deducted a credit but generation failed, refund it
+    if (usedCredit && email) {
+      try {
+        await pool.query(
+          'UPDATE user_credits SET credits = credits + 1, updated_at = NOW() WHERE email = $1',
+          [email.toLowerCase().trim()]
+        );
+      } catch (refundErr) {
+        console.error('Credit refund error:', refundErr);
+      }
+    }
     res.status(500).json({ error: err.message });
   }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 4. POST /api/stripe/webhook
-//    Stripe sends payment.completed events here
-//    → store the customer email in Neon DB
+//    Stripe sends checkout.session.completed here
+//    → add 200 credits to the user's account
 // ─────────────────────────────────────────────────────────────────────────────
 app.post('/api/stripe/webhook', async (req, res) => {
   const sig = req.headers['stripe-signature'];
@@ -203,13 +229,14 @@ app.post('/api/stripe/webhook', async (req, res) => {
     if (email) {
       try {
         await pool.query(`
-          INSERT INTO unlocked_users (email, stripe_payment_id, unlocked_at)
-          VALUES ($1, $2, NOW())
+          INSERT INTO user_credits (email, credits, stripe_session_id, created_at, updated_at)
+          VALUES ($1, 200, $2, NOW(), NOW())
           ON CONFLICT (email) DO UPDATE
-            SET stripe_payment_id = $2,
-                unlocked_at       = NOW()
+            SET credits           = user_credits.credits + 200,
+                stripe_session_id = $2,
+                updated_at        = NOW()
         `, [email.toLowerCase().trim(), session.id]);
-        console.log(`✓ Unlocked: ${email}`);
+        console.log(`✓ +200 credits added: ${email}`);
       } catch (err) {
         console.error('DB upsert error:', err);
       }

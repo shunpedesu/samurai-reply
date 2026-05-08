@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Samurai Reply — The reply you couldn't write.</title>
-<meta name="description" content="Paste any awkward message. Get 5 AI-powered replies instantly — polished, honest, rage, one-liner, and samurai. $9.99 lifetime.">
+<meta name="description" content="Paste any awkward message. Get 5 AI-powered replies instantly — polished, honest, rage, one-liner, and samurai. 200 credits for $9.99.">
 <meta property="og:title" content="Samurai Reply — The reply you couldn't write.">
-<meta property="og:description" content="5 AI replies for any awkward message. Polished · Honest · Rage · One liner · Samurai. Try free.">
+<meta property="og:description" content="5 AI replies for any awkward message. Polished · Honest · Rage · One liner · Samurai. Try free, then top up credits.">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Samurai Reply — The reply you couldn't write.">
@@ -522,8 +522,8 @@ textarea::placeholder { color: var(--muted); }
 <nav class="nav">
   <span class="logo">Samurai<em>Reply</em></span>
   <div class="nav-right">
-    <span class="nav-uses" id="nav-uses">3 free left</span>
-    <button class="pro-btn" onclick="openWall()">UNLOCK $9.99</button>
+    <span class="nav-uses" id="nav-uses">3 FREE LEFT</span>
+    <button class="pro-btn" onclick="openWall()">💎 200 CREDITS — $9.99</button>
   </div>
 </nav>
 
@@ -547,10 +547,10 @@ textarea::placeholder { color: var(--muted); }
 
 <div class="meter-wrap">
   <div class="meter-box">
-    <span class="meter-lbl">FREE USES</span>
+    <span class="meter-lbl" id="meter-lbl">FREE USES</span>
     <div class="meter-track"><div class="meter-fill" id="mfill" style="width:100%"></div></div>
     <span class="meter-num" id="mnum">3 / 3</span>
-    <button class="meter-up" onclick="openWall()">UNLOCK $9.99 →</button>
+    <button class="meter-up" onclick="openWall()" id="meter-up-btn">GET 200 CREDITS →</button>
   </div>
 </div>
 
@@ -617,26 +617,26 @@ textarea::placeholder { color: var(--muted); }
 <div class="wall-bg" id="wall-bg" onclick="bgDismiss(event)">
   <div class="wall">
     <div class="wall-top">
-      <p class="wall-eye">// FREE LIMIT REACHED — 3/3 USED</p>
-      <h2>UNLOCK<br><em>REPLYLAB</em></h2>
-      <p class="wall-desc">One payment. Use it forever. No subscriptions, no monthly bills.</p>
+      <p class="wall-eye" id="wall-eye-txt">// FREE LIMIT REACHED — 3/3 USED</p>
+      <h2>TOP UP<br><em>CREDITS</em></h2>
+      <p class="wall-desc">Pay once, use at your own pace. No subscriptions.</p>
     </div>
     <div class="lifetime-card">
       <div class="lc-left">
-        <div class="lc-badge">LIFETIME ACCESS</div>
+        <div class="lc-badge">CREDIT PACK</div>
         <div class="lc-price">$9.99</div>
-        <div class="lc-once">one-time · yours forever</div>
+        <div class="lc-once">= 200 credits · ~$0.05/reply</div>
       </div>
       <div class="lc-feats">
-        <div class="lc-feat">∞ Unlimited replies</div>
+        <div class="lc-feat">💎 200 reply credits</div>
         <div class="lc-feat">⊞ Screenshot reader</div>
         <div class="lc-feat">⚔ All 5 reply tones</div>
-        <div class="lc-feat">⚡ Priority generation</div>
-        <div class="lc-feat">🔮 Future updates free</div>
+        <div class="lc-feat">⚡ Instant generation</div>
+        <div class="lc-feat">🔄 Top up anytime</div>
       </div>
     </div>
     <a class="cta" href="#" id="stripe-link" onclick="handlePayment(event)">
-      PAY $9.99 — UNLOCK FOREVER →
+      BUY 200 CREDITS — $9.99 →
     </a>
     <button class="wall-no" onclick="closeWall()">No thanks, I'll stick with 3 free per day</button>
   </div>
@@ -660,7 +660,8 @@ const TYPES=[
 const LOADS=["THINKING…","SUMMONING THE SAMURAI…","CHANNELING YOUR RAGE…","FINDING THE ONE-LINER…","ALMOST DONE…"];
 
 const FREE_MAX=3;
-let used=0;
+let used=0;          // free uses today
+let userCredits=0;   // paid credits remaining
 let imgExtracted='';
 let activeTab='text';
 
@@ -750,38 +751,41 @@ dropArea.addEventListener('drop', ev => {
 function loadP(i){ document.getElementById('msg').value=PRESETS[i]; if(activeTab!=='text') switchTab('text', document.querySelectorAll('.itab')[0]); upd(); }
 function upd(){ document.getElementById('cc').textContent=document.getElementById('msg').value.length+' CHARS'; }
 function rst(){ document.getElementById('msg').value=''; document.getElementById('res').classList.remove('on'); document.getElementById('err').classList.remove('on'); document.getElementById('gbtn').disabled=false; upd(); }
-function openWall(){ document.getElementById('wall-bg').classList.add('on'); }
 function closeWall(){ document.getElementById('wall-bg').classList.remove('on'); }
 function bgDismiss(e){ if(e.target===document.getElementById('wall-bg')) closeWall(); }
-function fakeUpgrade(){
-  closeWall();
-  used=0;
-  updateMeter();
-  document.getElementById('gbtn').disabled=false;
-  // In production: verify Stripe webhook, then set localStorage flag
-  // localStorage.setItem('samurai-reply_pro', '1');
-  document.getElementById('nav-uses').textContent='∞ UNLOCKED';
-  document.getElementById('mnum').textContent='∞';
-  document.getElementById('mfill').style.width='100%';
-  document.getElementById('mfill').className='meter-fill';
-}
-
 function updateMeter(){
-  const left=Math.max(0,FREE_MAX-used);
-  const pct=(left/FREE_MAX)*100;
-  const f=document.getElementById('mfill');
-  f.style.width=pct+'%';
-  f.className='meter-fill'+(pct<=33?' low':pct<=66?' warn':'');
-  document.getElementById('mnum').textContent=left+' / '+FREE_MAX;
-  document.getElementById('nav-uses').textContent=left+' FREE LEFT';
+  if(userCredits>0){
+    // Credits mode
+    const pct=Math.min(100,(userCredits/200)*100);
+    const f=document.getElementById('mfill');
+    f.style.width=pct+'%';
+    f.className='meter-fill'+(pct<=15?' low':pct<=40?' warn':'');
+    document.getElementById('mnum').textContent=userCredits+' CREDITS';
+    document.getElementById('meter-lbl').textContent='CREDITS';
+    document.getElementById('nav-uses').textContent='💎 '+userCredits+' CREDITS';
+    document.getElementById('meter-up-btn').textContent='TOP UP →';
+    document.getElementById('gbtn').disabled=false;
+  } else {
+    // Free mode
+    const left=Math.max(0,FREE_MAX-used);
+    const pct=(left/FREE_MAX)*100;
+    const f=document.getElementById('mfill');
+    f.style.width=pct+'%';
+    f.className='meter-fill'+(pct<=33?' low':pct<=66?' warn':'');
+    document.getElementById('mnum').textContent=left+' / '+FREE_MAX;
+    document.getElementById('meter-lbl').textContent='FREE USES';
+    document.getElementById('nav-uses').textContent=left+' FREE LEFT';
+    document.getElementById('meter-up-btn').textContent='GET 200 CREDITS →';
+    if(left<=0) document.getElementById('gbtn').disabled=true;
+  }
 }
 
 // --- generate ---
 async function gen(){
   const msg=document.getElementById('msg').value.trim();
   if(!msg) return;
-  const isUnlocked = document.getElementById('nav-uses').textContent.includes('∞');
-  if(!isUnlocked && used>=FREE_MAX){ openWall(); return; }
+  // If no credits and free limit reached, open paywall
+  if(userCredits<=0 && used>=FREE_MAX){ openWall(); return; }
 
   document.getElementById('gbtn').disabled=true;
   document.getElementById('ld').classList.add('on');
@@ -792,7 +796,6 @@ async function gen(){
   const iv=setInterval(()=>{ li=(li+1)%LOADS.length; document.getElementById('ldtxt').textContent=LOADS[li]; },1000);
 
   try{
-    // Call our backend (handles rate limiting + Stripe unlock check)
     const email = localStorage.getItem('samurai-reply_email') || '';
     const r = await fetch(API_BASE + '/api/generate', {
       method: 'POST',
@@ -801,7 +804,6 @@ async function gen(){
     });
 
     if (r.status === 429) {
-      const data = await r.json();
       clearInterval(iv);
       document.getElementById('ld').classList.remove('on');
       document.getElementById('gbtn').disabled = false;
@@ -810,20 +812,24 @@ async function gen(){
     }
     if (!r.ok) throw new Error('API error ' + r.status);
     const data = await r.json();
-    const p = data.replies;
-    if (data.unlocked) {
-      document.getElementById('nav-uses').textContent = '∞ UNLOCKED';
-    }
 
     clearInterval(iv);
     document.getElementById('ld').classList.remove('on');
-    used++; updateMeter();
-    const unlocked = document.getElementById('nav-uses').textContent.includes('∞');
-    if(!unlocked && used>=FREE_MAX) document.getElementById('gbtn').disabled=true;
-    else document.getElementById('gbtn').disabled=false;
-    render(p);
-    const ul = document.getElementById('nav-uses').textContent.includes('∞');
-    if(!ul && used>=FREE_MAX) setTimeout(openWall, 1800);
+
+    // Update credit/usage state from response
+    if (data.usedCredit) {
+      userCredits = data.credits;
+    } else {
+      used++;
+    }
+    updateMeter();
+
+    render(data.replies);
+
+    // Show paywall if free uses exhausted and no credits
+    if(userCredits<=0 && used>=FREE_MAX){
+      setTimeout(openWall, 1800);
+    }
 
   }catch(e){
     clearInterval(iv);
@@ -894,29 +900,38 @@ async function handlePayment(e) {
   }
 }
 
-// ── Check unlock status on load (for returning paid users) ───────────────────
-async function checkUnlockOnLoad() {
+// ── Check credit balance on load (for returning paid users) ──────────────────
+async function checkCreditsOnLoad() {
   const email = localStorage.getItem('samurai-reply_email');
   if (!email) return;
   try {
-    const r = await fetch(API_BASE + '/api/check-unlock', {
+    const r = await fetch(API_BASE + '/api/check-credits', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
     });
-    const { unlocked } = await r.json();
-    if (unlocked) {
-      used = 0;
-      document.getElementById('nav-uses').textContent = '∞ UNLOCKED';
-      document.getElementById('mnum').textContent = '∞';
-      document.getElementById('mfill').style.width = '100%';
-      document.getElementById('gbtn').disabled = false;
+    const data = await r.json();
+    if (data.credits > 0) {
+      userCredits = data.credits;
+      updateMeter();
     }
   } catch { /* silently fail */ }
 }
 
+// ── Update paywall eye text when opening ─────────────────────────────────────
+function openWall() {
+  if(userCredits<=0 && used>=FREE_MAX) {
+    document.getElementById('wall-eye-txt').textContent = '// FREE LIMIT REACHED — 3/3 USED';
+  } else if(userCredits===0) {
+    document.getElementById('wall-eye-txt').textContent = '// OUT OF CREDITS';
+  } else {
+    document.getElementById('wall-eye-txt').textContent = '// GET MORE CREDITS';
+  }
+  document.getElementById('wall-bg').classList.add('on');
+}
+
 // Check on page load
-checkUnlockOnLoad();
+checkCreditsOnLoad();
 
 </script>
 
