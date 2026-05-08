@@ -12,6 +12,7 @@
 require('dotenv').config();
 const express  = require('express');
 const cors     = require('cors');
+const path     = require('path');
 const stripe   = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Pool } = require('pg');
 
@@ -286,6 +287,13 @@ app.post('/api/extract-image', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Static files (index.html, sw.js, manifest.json)
+// ─────────────────────────────────────────────────────────────────────────────
+app.get('/sw.js',        (req, res) => res.sendFile(path.join(__dirname, 'sw.js')));
+app.get('/manifest.json',(req, res) => res.sendFile(path.join(__dirname, 'manifest.json')));
+app.get('*',             (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Start
