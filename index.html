@@ -513,6 +513,32 @@ textarea::placeholder { color: var(--muted); }
 .lc-feats { flex: 1; display: flex; flex-direction: column; gap: 4px; padding-top: 4px; }
 .lc-feat { font-size: 0.65rem; color: var(--text); letter-spacing: 0.04em; line-height: 2; }
 
+/* Two-plan layout */
+.plans-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 1.25rem 0; }
+.plan-card {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; gap: 6px;
+  cursor: pointer; transition: all 0.15s;
+}
+.plan-card:hover { border-color: var(--neon-y); box-shadow: 0 0 16px rgba(255,214,10,0.1); }
+.plan-card.featured { border-color: var(--neon-y); box-shadow: 0 0 20px rgba(255,214,10,0.12); }
+.plan-badge { font-size: 0.5rem; font-weight: 700; letter-spacing: 0.1em; padding: 2px 7px; border-radius: 2px; display: inline-block; width: fit-content; }
+.plan-badge.starter  { background: rgba(0,207,255,0.15); color: var(--neon-b); }
+.plan-badge.popular  { background: var(--neon-y); color: #0a0a0e; }
+.plan-price { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--neon-y); line-height: 1; text-shadow: 0 0 16px rgba(255,214,10,0.4); }
+.plan-credits { font-size: 0.62rem; color: var(--text); letter-spacing: 0.04em; }
+.plan-per { font-size: 0.55rem; color: var(--muted); letter-spacing: 0.04em; }
+.plan-btn {
+  margin-top: auto; width: 100%;
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; font-weight: 700;
+  border: none; border-radius: 4px; padding: 8px; cursor: pointer;
+  letter-spacing: 0.05em; transition: all 0.15s;
+}
+.plan-btn.starter-btn { background: rgba(0,207,255,0.12); color: var(--neon-b); border: 1px solid rgba(0,207,255,0.3); }
+.plan-btn.starter-btn:hover { background: rgba(0,207,255,0.2); }
+.plan-btn.standard-btn { background: var(--neon-y); color: #0a0a0e; }
+.plan-btn.standard-btn:hover { box-shadow: 0 0 16px rgba(255,214,10,0.4); }
+
 
 
 </style>
@@ -523,7 +549,7 @@ textarea::placeholder { color: var(--muted); }
   <span class="logo">Samurai<em>Reply</em></span>
   <div class="nav-right">
     <span class="nav-uses" id="nav-uses">3 FREE LEFT</span>
-    <button class="pro-btn" onclick="openWall()">💎 200 CREDITS — $9.99</button>
+    <button class="pro-btn" onclick="openWall()">💎 GET CREDITS</button>
   </div>
 </nav>
 
@@ -621,23 +647,24 @@ textarea::placeholder { color: var(--muted); }
       <h2>TOP UP<br><em>CREDITS</em></h2>
       <p class="wall-desc">Pay once, use at your own pace. No subscriptions.</p>
     </div>
-    <div class="lifetime-card">
-      <div class="lc-left">
-        <div class="lc-badge">CREDIT PACK</div>
-        <div class="lc-price">$9.99</div>
-        <div class="lc-once">= 200 credits · ~$0.05/reply</div>
+    <div class="plans-wrap">
+      <!-- Starter -->
+      <div class="plan-card">
+        <span class="plan-badge starter">STARTER</span>
+        <div class="plan-price">$2.99</div>
+        <div class="plan-credits">💎 100 credits</div>
+        <div class="plan-per">~$0.03 / reply</div>
+        <button class="plan-btn starter-btn" onclick="handlePayment(event,'starter')">BUY 100 →</button>
       </div>
-      <div class="lc-feats">
-        <div class="lc-feat">💎 200 reply credits</div>
-        <div class="lc-feat">⊞ Screenshot reader</div>
-        <div class="lc-feat">⚔ All 5 reply tones</div>
-        <div class="lc-feat">⚡ Instant generation</div>
-        <div class="lc-feat">🔄 Top up anytime</div>
+      <!-- Standard -->
+      <div class="plan-card featured">
+        <span class="plan-badge popular">⭐ POPULAR</span>
+        <div class="plan-price">$7.99</div>
+        <div class="plan-credits">💎 500 credits</div>
+        <div class="plan-per">~$0.016 / reply</div>
+        <button class="plan-btn standard-btn" onclick="handlePayment(event,'standard')">BUY 500 →</button>
       </div>
     </div>
-    <a class="cta" href="#" id="stripe-link" onclick="handlePayment(event)">
-      BUY 200 CREDITS — $9.99 →
-    </a>
     <button class="wall-no" onclick="closeWall()">No thanks, I'll stick with 3 free per day</button>
   </div>
 </div>
@@ -880,23 +907,27 @@ function eA(s){ return s.replace(/\\/g,'\\\\').replace(/"/g,'&quot;').replace(/'
 updateMeter();
 
 // ── Email collection & Stripe redirect ───────────────────────────────────────
-async function handlePayment(e) {
+async function handlePayment(e, plan) {
   e.preventDefault();
-  const email = prompt('Enter your email to receive your unlock confirmation:');
+  e.stopPropagation();
+  const email = prompt('メールアドレスを入力してください（クレジット付与の確認に使用します）:');
   if (!email || !email.includes('@')) {
-    alert('Please enter a valid email address.');
+    alert('有効なメールアドレスを入力してください。');
     return;
   }
   localStorage.setItem('samurai-reply_email', email);
 
-  // Get Stripe link from backend (pre-fills email)
   try {
-    const r = await fetch(API_BASE + '/api/stripe/link?email=' + encodeURIComponent(email));
+    const p = plan || 'starter';
+    const r = await fetch(API_BASE + '/api/stripe/link?plan=' + p + '&email=' + encodeURIComponent(email));
     const { url } = await r.json();
-    window.location.href = url;
+    if (url && url !== '#') {
+      window.location.href = url;
+    } else {
+      alert('決済リンクの準備中です。しばらくお待ちください。');
+    }
   } catch {
-    // Fallback: open Stripe link directly
-    window.open('https://buy.stripe.com/YOUR_LINK', '_blank');
+    alert('エラーが発生しました。しばらくお待ちください。');
   }
 }
 

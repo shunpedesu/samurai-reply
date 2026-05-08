@@ -36,11 +36,15 @@ app.use(express.json());
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. GET /api/stripe/link
-//    Frontend calls this to get the Stripe Payment Link URL
+//    Frontend calls this to get Stripe Payment Link URLs
+//    ?plan=starter (100 credits / $2.99) or plan=standard (500 credits / $7.99)
 // ─────────────────────────────────────────────────────────────────────────────
 app.get('/api/stripe/link', (req, res) => {
-  const { email } = req.query;
-  let url = process.env.STRIPE_PAYMENT_LINK;
+  const { email, plan } = req.query;
+  const base = plan === 'standard'
+    ? process.env.STRIPE_PAYMENT_LINK_STANDARD
+    : process.env.STRIPE_PAYMENT_LINK_STARTER;
+  let url = base || process.env.STRIPE_PAYMENT_LINK || '#';
   if (email) url += `?prefilled_email=${encodeURIComponent(email)}`;
   res.json({ url });
 });
@@ -228,16 +232,23 @@ app.post('/api/stripe/webhook', async (req, res) => {
       session.receipt_email;
 
     if (email) {
+      // Determine credits based on amount paid
+      // $2.99 (299 cents) → 100 credits (Starter)
+      // $7.99 (799 cents) → 500 credits (Standard)
+      const amountPaid = session.amount_total || session.amount_subtotal || 0;
+      let credits = 100; // default: Starter
+      if (amountPaid >= 700) credits = 500; // Standard pack
+
       try {
         await pool.query(`
           INSERT INTO user_credits (email, credits, stripe_session_id, created_at, updated_at)
-          VALUES ($1, 200, $2, NOW(), NOW())
+          VALUES ($1, $3, $2, NOW(), NOW())
           ON CONFLICT (email) DO UPDATE
-            SET credits           = user_credits.credits + 200,
+            SET credits           = user_credits.credits + $3,
                 stripe_session_id = $2,
                 updated_at        = NOW()
-        `, [email.toLowerCase().trim(), session.id]);
-        console.log(`✓ +200 credits added: ${email}`);
+        `, [email.toLowerCase().trim(), session.id, credits]);
+        console.log(`✓ +${credits} credits added: ${email}`);
       } catch (err) {
         console.error('DB upsert error:', err);
       }
