@@ -310,6 +310,24 @@ app.post('/api/extract-image', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// TEMP: GET /api/models — list available Anthropic models for this API key
+// ─────────────────────────────────────────────────────────────────────────────
+app.get('/api/models', async (req, res) => {
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/models', {
+      headers: {
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+      },
+    });
+    const data = await r.json();
+    res.json(data);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Static files (index.html, sw.js, manifest.json)
 // ─────────────────────────────────────────────────────────────────────────────
 app.get('/sw.js',        (req, res) => res.sendFile(path.join(__dirname, 'sw.js')));
