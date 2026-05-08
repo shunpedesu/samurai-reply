@@ -834,6 +834,8 @@ async function gen(){
       clearInterval(iv);
       document.getElementById('ld').classList.remove('on');
       document.getElementById('gbtn').disabled = false;
+      used = FREE_MAX; // mark as exhausted so correct message shows
+      updateMeter();
       openWall();
       return;
     }

@@ -129,18 +129,10 @@ app.post('/api/generate', async (req, res) => {
         return res.status(429).json({
           error: 'Free limit reached',
           limitReached: true,
-          stripeLink: process.env.STRIPE_PAYMENT_LINK,
         });
       }
-
-      // Upsert usage count
-      await pool.query(`
-        INSERT INTO free_usage (key, count, updated_at)
-        VALUES ($1, 1, NOW())
-        ON CONFLICT (key) DO UPDATE
-          SET count      = free_usage.count + 1,
-              updated_at = NOW()
-      `, [key]);
+      // Save key to increment AFTER successful generation
+      req._freeKey = key;
     } catch (err) {
       console.error('Rate limit error:', err);
     }
@@ -181,6 +173,21 @@ Return ONLY valid JSON, no other text:
     const match = raw.match(/\{[\s\S]*\}/);
     if (!match) throw new Error('Parse failed');
     const replies = JSON.parse(match[0]);
+
+    // Only count free usage AFTER successful generation
+    if (req._freeKey) {
+      try {
+        await pool.query(`
+          INSERT INTO free_usage (key, count, updated_at)
+          VALUES ($1, 1, NOW())
+          ON CONFLICT (key) DO UPDATE
+            SET count      = free_usage.count + 1,
+                updated_at = NOW()
+        `, [req._freeKey]);
+      } catch (err) {
+        console.error('Free usage increment error:', err);
+      }
+    }
 
     res.json({ replies, credits: creditsRemaining, usedCredit });
 
