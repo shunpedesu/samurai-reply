@@ -318,6 +318,7 @@ app.post('/api/extract-image', async (req, res) => {
 app.get('/sw.js',        (req, res) => res.sendFile(path.join(__dirname, 'sw.js')));
 app.get('/manifest.json',(req, res) => res.sendFile(path.join(__dirname, 'manifest.json')));
 app.get('/samurai.svg',  (req, res) => res.sendFile(path.join(__dirname, 'samurai.svg')));
+app.get('/ogp.png',      (req, res) => res.sendFile(path.join(__dirname, 'ogp.png')));
 app.get('*',             (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 // ─────────────────────────────────────────────────────────────────────────────
