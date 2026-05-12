@@ -159,7 +159,27 @@ h1 {
 
 .hero-desc {
   font-size: 0.78rem; color: #887e90; line-height: 1.8;
-  max-width: 420px; margin-bottom: 1.5rem;
+  max-width: 420px; margin-bottom: 1.2rem;
+}
+
+/* SCENE HINTS */
+.scene-hints {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 1.6rem;
+}
+.scene-chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em;
+  color: #887e90; border: 1px solid rgba(136,126,144,0.25);
+  background: rgba(136,126,144,0.06);
+  border-radius: 2px; padding: 5px 12px;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  line-height: 1.6;
+}
+.scene-chip:hover {
+  color: var(--sam); border-color: rgba(200,160,64,0.4);
+  background: rgba(200,160,64,0.06);
+  text-shadow: 0 0 8px rgba(200,160,64,0.3);
 }
 
 /* TYPE BADGES */
@@ -643,6 +663,11 @@ textarea::placeholder { color: var(--muted); }
     <span class="h1-gold">A WORTHY REPLY.</span>
   </h1>
   <p class="hero-desc">Five characters. One chance. Choose wisely.</p>
+  <div class="scene-hints">
+    <button class="scene-chip" onclick="loadScene(0)">💬 Stuck on a reply</button>
+    <button class="scene-chip" onclick="loadScene(1)">🤔 Need a fresh take</button>
+    <button class="scene-chip" onclick="loadScene(2)">😤 Just need to vent</button>
+  </div>
   <div class="type-strip">
     <span class="tbadge tb-ninja">🥷 NINJA</span>
     <span class="tbadge tb-zen">🧘 ZEN</span>
@@ -859,6 +884,12 @@ dropArea.addEventListener('drop', ev => {
 });
 
 // --- utils ---
+const SCENES=[
+  "My friend read my long message two days ago and still hasn't replied. We were really close. I don't know if I should follow up or just wait.",
+  "I've been offered a promotion but it means moving to another city. I'm excited but also scared. Part of me wants to say no. What do I do?",
+  "My coworker keeps taking credit for my ideas in team meetings and my manager doesn't seem to notice. I'm so frustrated but don't know how to bring it up.",
+];
+function loadScene(i){ document.getElementById('msg').value=SCENES[i]; if(activeTab!=='text') switchTab('text', document.querySelectorAll('.itab')[0]); upd(); window.scrollTo({top: document.querySelector('.main').offsetTop - 20, behavior:'smooth'}); }
 function loadP(i){ document.getElementById('msg').value=PRESETS[i]; if(activeTab!=='text') switchTab('text', document.querySelectorAll('.itab')[0]); upd(); }
 function upd(){ document.getElementById('cc').textContent=document.getElementById('msg').value.length+' CHARS'; }
 function rst(){ document.getElementById('msg').value=''; document.getElementById('res').classList.remove('on'); document.getElementById('err').classList.remove('on'); document.getElementById('gbtn').disabled=false; upd(); }
