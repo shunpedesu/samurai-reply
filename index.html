@@ -6,7 +6,7 @@
 <title>Samurai Reply — The reply you couldn't write.</title>
 <meta name="description" content="Paste any awkward message. Get 5 AI replies instantly — Ninja, Zen, Obaachan, Tsundere, and Samurai. Free to try.">
 <meta property="og:title" content="Samurai Reply — The reply you couldn't write.">
-<meta property="og:description" content="5 AI replies for any awkward message. Polished · Honest · Rage · Ghost · Samurai. Try free, then top up credits.">
+<meta property="og:description" content="5 AI replies for any awkward message. Ninja · Zen · Obaachan · Tsundere · Samurai. Free to try.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://samurai-reply.vercel.app/">
 <meta property="og:image" content="https://samurai-reply.vercel.app/ogp.png?v=2">
@@ -46,7 +46,7 @@
   --neon-b: #00cfff;
   --neon-y: #ffd60a;
   --neon-p: #bf5af2;
-  --rage: #ff3b1a;
+  --err:  #ff3b1a;
   --ninja:  #00cfff;
   --zen:    #bf5af2;
   --oba:    #ffb347;
@@ -194,7 +194,7 @@ h1 {
 .meter-track { flex: 1; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
 .meter-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; background: var(--neon-g); box-shadow: 0 0 6px var(--neon-g); }
 .meter-fill.warn { background: var(--neon-y); box-shadow: 0 0 6px var(--neon-y); }
-.meter-fill.low  { background: var(--rage);   box-shadow: 0 0 6px var(--rage); }
+.meter-fill.low  { background: var(--err);   box-shadow: 0 0 6px var(--err); }
 .meter-num { font-size: 0.62rem; font-weight: 700; color: var(--text); white-space: nowrap; letter-spacing: 0.06em; }
 .meter-up {
   font-size: 0.58rem; font-weight: 700;
@@ -304,7 +304,7 @@ textarea::placeholder { color: var(--muted); }
   letter-spacing: 0.06em; line-height: 2;
 }
 .ocr-status.ok { color: var(--neon-g); text-shadow: 0 0 6px rgba(0,255,136,0.4); }
-.ocr-status.err { color: var(--rage); }
+.ocr-status.err { color: var(--err); }
 
 /* Input footer */
 .input-foot {
@@ -764,7 +764,7 @@ const TYPES=[
   {key:'tsundere',cls:'card-tsun',  pill:'cp-tsun',  label:'💢 TSUNDERE',   tone:'it\'s not like I wanted to reply…'},
   {key:'samurai', cls:'card-sam',   pill:'cp-sam',   label:'⚔ 侍 SAMURAI', tone:'honor · steel · ancient wisdom'},
 ];
-const LOADS=["THINKING…","SUMMONING THE SAMURAI…","CHANNELING YOUR RAGE…","FINDING THE ONE-LINER…","ALMOST DONE…"];
+const LOADS=["THINKING…","SUMMONING THE SAMURAI…","CONSULTING THE ZEN MASTER…","ARA ARA, PLEASE WAIT…","ALMOST DONE…"];
 
 const FREE_MAX=3;
 let used=0;          // free uses today
