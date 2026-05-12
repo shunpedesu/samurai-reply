@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Samurai Reply — The reply you couldn't write.</title>
-<meta name="description" content="Paste any awkward message. Get 5 AI-powered replies instantly — polished, honest, rage, one-liner, and samurai. 200 credits for $9.99.">
+<meta name="description" content="Paste any awkward message. Get 5 AI replies instantly — Ninja, Zen, Obaachan, Tsundere, and Samurai. Free to try.">
 <meta property="og:title" content="Samurai Reply — The reply you couldn't write.">
 <meta property="og:description" content="5 AI replies for any awkward message. Polished · Honest · Rage · Ghost · Samurai. Try free, then top up credits.">
 <meta property="og:type" content="website">
@@ -15,7 +15,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@shunpedesu">
 <meta name="twitter:title" content="Samurai Reply — The reply you couldn't write.">
-<meta name="twitter:description" content="5 AI replies for any awkward message. One of them is from a samurai.">
+<meta name="twitter:description" content="5 Japanese-themed AI replies: Ninja · Zen · Obaachan · Tsundere · Samurai.">
 <meta name="twitter:image" content="https://samurai-reply.vercel.app/ogp.png?v=2">
 <link rel="manifest" href="/manifest.json">
 <meta name="mobile-web-app-capable" content="yes">
@@ -47,6 +47,11 @@
   --neon-y: #ffd60a;
   --neon-p: #bf5af2;
   --rage: #ff3b1a;
+  --ninja:  #00cfff;
+  --zen:    #bf5af2;
+  --oba:    #ffb347;
+  --tsun:   #ff4d8d;
+  --sam:    #c8a040;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -167,11 +172,11 @@ h1 {
   border: 1px solid; line-height: 1.8;
   white-space: nowrap;
 }
-.tb-pro    { color: var(--neon-g);  border-color: var(--neon-g);  background: rgba(0,255,136,0.06);  text-shadow: 0 0 6px rgba(0,255,136,0.4); }
-.tb-honest { color: var(--neon-b);  border-color: var(--neon-b);  background: rgba(0,207,255,0.06);  text-shadow: 0 0 6px rgba(0,207,255,0.4); }
-.tb-rage   { color: var(--rage);    border-color: var(--rage);    background: rgba(255,59,26,0.06);  text-shadow: 0 0 6px rgba(255,59,26,0.4); }
-.tb-ghost  { color: var(--muted);   border-color: var(--muted);   background: rgba(102,96,112,0.08); }
-.tb-sam    { color: var(--neon-p);  border-color: var(--neon-p);  background: rgba(191,90,242,0.06); text-shadow: 0 0 6px rgba(191,90,242,0.4); font-family: 'Noto Serif JP', serif; }
+.tb-ninja  { color: var(--ninja);  border-color: var(--ninja);  background: rgba(0,207,255,0.06);  text-shadow: 0 0 6px rgba(0,207,255,0.4); }
+.tb-zen    { color: var(--zen);    border-color: var(--zen);    background: rgba(191,90,242,0.06); text-shadow: 0 0 6px rgba(191,90,242,0.4); }
+.tb-oba    { color: var(--oba);    border-color: var(--oba);    background: rgba(255,179,71,0.06);  text-shadow: 0 0 6px rgba(255,179,71,0.4); }
+.tb-tsun   { color: var(--tsun);   border-color: var(--tsun);   background: rgba(255,77,141,0.06);  text-shadow: 0 0 6px rgba(255,77,141,0.4); }
+.tb-sam    { color: var(--sam);    border-color: var(--sam);    background: rgba(200,160,64,0.06);  text-shadow: 0 0 6px rgba(200,160,64,0.4); font-family: 'Noto Serif JP', serif; }
 
 /* METER */
 .meter-wrap {
@@ -380,11 +385,11 @@ textarea::placeholder { color: var(--muted); }
   content: ''; position: absolute; top: 0; left: 0; right: 0;
   height: 2px;
 }
-.card-pro::before    { background: var(--neon-g); box-shadow: 0 0 8px var(--neon-g); }
-.card-honest::before { background: var(--neon-b); box-shadow: 0 0 8px var(--neon-b); }
-.card-rage::before   { background: var(--rage);   box-shadow: 0 0 8px var(--rage); }
-.card-ghost::before  { background: var(--muted); }
-.card-sam::before    { background: var(--neon-p); box-shadow: 0 0 8px var(--neon-p); }
+.card-ninja::before { background: var(--ninja); box-shadow: 0 0 8px var(--ninja); }
+.card-zen::before   { background: var(--zen);   box-shadow: 0 0 8px var(--zen); }
+.card-oba::before   { background: var(--oba);   box-shadow: 0 0 8px var(--oba); }
+.card-tsun::before  { background: var(--tsun);  box-shadow: 0 0 8px var(--tsun); }
+.card-sam::before   { background: var(--sam);   box-shadow: 0 0 8px var(--sam); }
 
 .card:nth-child(1){animation-delay:0.04s}
 .card:nth-child(2){animation-delay:0.09s}
@@ -394,19 +399,9 @@ textarea::placeholder { color: var(--muted); }
 @keyframes slideUp { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
 @keyframes cardIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-/* rage & samurai full width */
-.card.card-rage { grid-column: 1 / -1; }
+/* samurai & tsundere full width */
+.card.card-tsun { grid-column: 1 / -1; }
 .card.card-sam  { grid-column: 1 / -1; }
-
-/* Rage stamp */
-.rage-stamp {
-  position: absolute; top: 10px; right: 10px;
-  font-size: 0.52rem; font-weight: 700; letter-spacing: 0.1em;
-  background: var(--rage); color: #fff;
-  padding: 2px 8px; border-radius: 2px;
-  text-shadow: none;
-  box-shadow: 0 0 10px rgba(255,59,26,0.4);
-}
 
 /* card header */
 .card-head {
@@ -419,11 +414,11 @@ textarea::placeholder { color: var(--muted); }
   padding: 3px 9px; border-radius: 2px; border: 1px solid;
   white-space: nowrap; flex-shrink: 0; line-height: 1.8;
 }
-.cp-pro    { color: var(--neon-g); border-color: rgba(0,255,136,0.4);  background: rgba(0,255,136,0.06); }
-.cp-honest { color: var(--neon-b); border-color: rgba(0,207,255,0.4);  background: rgba(0,207,255,0.06); }
-.cp-rage   { color: var(--rage);   border-color: rgba(255,59,26,0.5);  background: rgba(255,59,26,0.06); }
-.cp-ghost  { color: var(--muted);  border-color: rgba(102,96,112,0.4); background: rgba(102,96,112,0.06); }
-.cp-sam    { color: var(--neon-p); border-color: rgba(191,90,242,0.4); background: rgba(191,90,242,0.06); font-family: 'Noto Serif JP', serif; }
+.cp-ninja { color: var(--ninja); border-color: rgba(0,207,255,0.4);  background: rgba(0,207,255,0.06); }
+.cp-zen   { color: var(--zen);   border-color: rgba(191,90,242,0.4); background: rgba(191,90,242,0.06); }
+.cp-oba   { color: var(--oba);   border-color: rgba(255,179,71,0.4); background: rgba(255,179,71,0.06); }
+.cp-tsun  { color: var(--tsun);  border-color: rgba(255,77,141,0.4); background: rgba(255,77,141,0.06); }
+.cp-sam   { color: var(--sam);   border-color: rgba(200,160,64,0.4); background: rgba(200,160,64,0.06); font-family: 'Noto Serif JP', serif; }
 
 .ctone { font-size: 0.62rem; color: var(--muted); line-height: 1.8; word-break: break-word; }
 
@@ -433,15 +428,16 @@ textarea::placeholder { color: var(--muted); }
   color: var(--text); flex: 1;
   word-break: break-word; overflow-wrap: break-word;
 }
-.card-sam .ctext { font-family: 'Noto Serif JP', serif; color: #d4c8e8; font-size: 0.8rem; line-height: 2; }
-.card-rage .ctext { color: #ffb0a0; }
+.card-sam .ctext  { font-family: 'Noto Serif JP', serif; color: #d4c8e8; font-size: 0.8rem; line-height: 2; }
+.card-oba .ctext  { color: #ffe0b2; }
+.card-tsun .ctext { color: #ffd6e8; }
 
 /* card footer */
 .cfoot {
   display: flex; justify-content: space-between; align-items: center;
   padding: 8px 12px 11px; flex-wrap: wrap; gap: 6px;
 }
-.cwarn { font-size: 0.56rem; color: rgba(255,59,26,0.5); letter-spacing: 0.06em; line-height: 2; }
+.cwarn { font-size: 0.56rem; color: rgba(255,77,141,0.5); letter-spacing: 0.06em; line-height: 2; }
 .ccopy {
   font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500;
   background: none; border: 1px solid var(--border2); color: var(--muted);
@@ -450,7 +446,7 @@ textarea::placeholder { color: var(--muted); }
 }
 .ccopy:hover { color: var(--text); border-color: var(--border2); }
 .ccopy.ok     { border-color: var(--neon-g); color: var(--neon-g); text-shadow: 0 0 6px rgba(0,255,136,0.4); }
-.ccopy.rage-ok{ border-color: var(--rage);   color: var(--rage);   text-shadow: 0 0 6px rgba(255,59,26,0.4); }
+.ccopy.tsun-ok{ border-color: var(--tsun);   color: var(--tsun);   text-shadow: 0 0 6px rgba(255,77,141,0.4); }
 
 /* PAYWALL */
 .wall-bg {
@@ -645,12 +641,12 @@ textarea::placeholder { color: var(--muted); }
     <span class="h1-white">THE REPLY</span>
     <span class="h1-red">YOU COULDN'T WRITE.</span>
   </h1>
-  <p class="hero-desc">Paste any awkward text — or screenshot it. Get 5 replies in seconds. From diplomatic to unhinged. One from a samurai.</p>
+  <p class="hero-desc">Paste any awkward text — or screenshot it. Get 5 replies in seconds. Ninja · Zen · Obaachan · Tsundere · Samurai.</p>
   <div class="type-strip">
-    <span class="tbadge tb-pro">✓ POLISHED</span>
-    <span class="tbadge tb-honest">✗ HONEST</span>
-    <span class="tbadge tb-rage">💢 RAGE (DO NOT SEND)</span>
-    <span class="tbadge tb-ghost">— ONE LINER</span>
+    <span class="tbadge tb-ninja">🥷 NINJA</span>
+    <span class="tbadge tb-zen">🧘 ZEN</span>
+    <span class="tbadge tb-oba">👵 OBAACHAN</span>
+    <span class="tbadge tb-tsun">💢 TSUNDERE</span>
     <span class="tbadge tb-sam">⚔ 侍 SAMURAI</span>
   </div>
 </section>
@@ -762,11 +758,11 @@ const PRESETS=[
   "I genuinely cannot deal anymore. My job is a nightmare, my roommate is insufferable, and I think my cat hates me. Can we talk? I really need to vent."
 ];
 const TYPES=[
-  {key:'pro',    cls:'card-pro',    pill:'cp-pro',    label:'✓ POLISHED',   tone:'safe · diplomatic · no drama'},
-  {key:'honest', cls:'card-honest', pill:'cp-honest', label:'✗ HONEST',     tone:'what you actually think'},
-  {key:'rage',   cls:'card-rage',   pill:'cp-rage',   label:'💢 RAGE',      tone:'DO NOT SEND THIS'},
-  {key:'ghost',  cls:'card-ghost',  pill:'cp-ghost',  label:'— ONE LINER',  tone:'minimum viable reply'},
-  {key:'samurai',cls:'card-sam',    pill:'cp-sam',    label:'⚔ 侍 SAMURAI', tone:'honor · steel · ancient wisdom'},
+  {key:'ninja',   cls:'card-ninja', pill:'cp-ninja', label:'🥷 NINJA',      tone:'indirect · clever · unseen blade'},
+  {key:'zen',     cls:'card-zen',   pill:'cp-zen',   label:'🧘 ZEN',        tone:'transcended · philosophically calm'},
+  {key:'obaachan',cls:'card-oba',   pill:'cp-oba',   label:'👵 OBAACHAN',   tone:'warm · passive-aggressive · ara ara'},
+  {key:'tsundere',cls:'card-tsun',  pill:'cp-tsun',  label:'💢 TSUNDERE',   tone:'it\'s not like I wanted to reply…'},
+  {key:'samurai', cls:'card-sam',   pill:'cp-sam',   label:'⚔ 侍 SAMURAI', tone:'honor · steel · ancient wisdom'},
 ];
 const LOADS=["THINKING…","SUMMONING THE SAMURAI…","CHANNELING YOUR RAGE…","FINDING THE ONE-LINER…","ALMOST DONE…"];
 
@@ -965,19 +961,18 @@ function render(p){
   grid.innerHTML='';
   TYPES.forEach(t=>{
     const text=p[t.key]||'—';
-    const isRage=t.key==='rage';
+    const isTsun=t.key==='tsundere';
     const card=document.createElement('div');
     card.className='card '+t.cls;
     card.innerHTML=`
-      ${isRage?'<span class="rage-stamp">⚠ DO NOT SEND</span>':''}
       <div class="card-head">
         <span class="cpill ${t.pill}">${t.label}</span>
         <span class="ctone">${t.tone}</span>
       </div>
       <div class="ctext">${esc(text)}</div>
       <div class="cfoot">
-        ${isRage?'<span class="cwarn">for your eyes only</span>':'<span></span>'}
-        <button class="ccopy" data-text="${eA(text)}" data-rage="${isRage}" onclick="cp(this)">${isRage?'COPY ANYWAY 😈':'COPY'}</button>
+        ${isTsun?'<span class="cwarn">i-it\'s not like I care…</span>':'<span></span>'}
+        <button class="ccopy" data-text="${eA(text)}" data-tsun="${isTsun}" onclick="cp(this)">COPY</button>
       </div>`;
     grid.appendChild(card);
   });
@@ -986,10 +981,10 @@ function render(p){
 
 function cp(btn){
   navigator.clipboard.writeText(btn.dataset.text).then(()=>{
-    const r=btn.dataset.rage==='true';
-    btn.textContent=r?'COPIED 😈 GOOD LUCK':'COPIED ✓';
-    btn.classList.add(r?'rage-ok':'ok');
-    setTimeout(()=>{ btn.textContent=r?'COPY ANYWAY 😈':'COPY'; btn.classList.remove('rage-ok','ok'); },2200);
+    const t=btn.dataset.tsun==='true';
+    btn.textContent=t?'COPIED… n-not for you!':'COPIED ✓';
+    btn.classList.add(t?'tsun-ok':'ok');
+    setTimeout(()=>{ btn.textContent='COPY'; btn.classList.remove('tsun-ok','ok'); },2200);
   });
 }
 

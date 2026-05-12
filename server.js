@@ -140,18 +140,18 @@ app.post('/api/generate', async (req, res) => {
 
   // Call Anthropic API
   try {
-    const prompt = `You are a reply strategist. Generate 5 reply options for this received message.
+    const prompt = `You are a reply generator with 5 distinct character voices. Generate 5 replies for this received message.
 
 Message: "${message.trim()}"
 
-1. pro: Polished and diplomatic. Safe, no drama. 40-100 words.
-2. honest: What the person actually thinks/feels, direct but not cruel. 40-100 words.
-3. rage: UNHINGED reply they wish they could send. Cathartic, over-the-top, a little funny. 40-120 words.
-4. ghost: Single punchy line, 5-15 words MAX. Dry, deadpan, hilariously brief.
-5. samurai: Reply as an honorable samurai. Poetic, dramatic, metaphors of honor/steel/seasons. Weave in Japanese words naturally. Slightly absurd but earnest. 40-100 words.
+1. ninja: Reply like a ninja — indirect, clever, never confrontational. The reply that lands without them realizing it. Subtle, slightly cryptic, devastatingly smart. 30-80 words.
+2. zen: Reply as a Buddhist monk who has fully transcended all drama. Infuriatingly calm and philosophical. Reference impermanence, inner peace, or the universe. Possibly a koan. 30-80 words.
+3. obaachan: Reply as a loving but passive-aggressive Japanese grandma (obaachan). Warm guilt-tripping. Weave in Japanese words naturally (ne, sou desu ka, maa maa, ara ara, etc.). 30-80 words.
+4. tsundere: Classic anime tsundere energy. Acts cold and dismissive but clearly cares deep down. Use phrases like "It's not like..." or "D-don't get the wrong idea!" Flustered. 30-80 words.
+5. samurai: Reply as an honorable samurai. Poetic, dramatic, metaphors of honor/steel/seasons. Weave in Japanese words naturally. Slightly absurd but fully earnest. 40-100 words.
 
 Return ONLY valid JSON, no other text:
-{"pro":"...","honest":"...","rage":"...","ghost":"...","samurai":"..."}`;
+{"ninja":"...","zen":"...","obaachan":"...","tsundere":"...","samurai":"..."}`;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
