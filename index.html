@@ -169,16 +169,23 @@ h1 {
   margin-bottom: 1rem;
 }
 .tbadge {
+  display: flex; flex-direction: column;
+  padding: 6px 12px; border-radius: 2px;
+  border: 1px solid;
+}
+.tb-name {
   font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em;
-  padding: 4px 12px; border-radius: 2px;
-  border: 1px solid; line-height: 1.8;
-  white-space: nowrap;
+  line-height: 1.6; white-space: nowrap;
+}
+.tb-desc {
+  font-size: 0.52rem; font-weight: 400; letter-spacing: 0.03em;
+  line-height: 1.4; opacity: 0.65; white-space: nowrap;
 }
 .tb-ninja  { color: var(--ninja);  border-color: var(--ninja);  background: rgba(0,207,255,0.06);  text-shadow: 0 0 6px rgba(0,207,255,0.4); }
 .tb-zen    { color: var(--zen);    border-color: var(--zen);    background: rgba(191,90,242,0.06); text-shadow: 0 0 6px rgba(191,90,242,0.4); }
 .tb-oba    { color: var(--oba);    border-color: var(--oba);    background: rgba(255,179,71,0.06);  text-shadow: 0 0 6px rgba(255,179,71,0.4); }
 .tb-tsun   { color: var(--tsun);   border-color: var(--tsun);   background: rgba(255,77,141,0.06);  text-shadow: 0 0 6px rgba(255,77,141,0.4); }
-.tb-sam    { color: var(--sam);    border-color: var(--sam);    background: rgba(200,160,64,0.06);  text-shadow: 0 0 6px rgba(200,160,64,0.4); font-family: 'Noto Serif JP', serif; }
+.tb-sam    { color: var(--sam);    border-color: var(--sam);    background: rgba(200,160,64,0.06);  text-shadow: 0 0 6px rgba(200,160,64,0.4); }
 
 /* METER */
 .meter-wrap {
@@ -635,12 +642,27 @@ textarea::placeholder { color: var(--muted); }
   </h1>
   <p class="hero-desc">Five characters. One chance. Choose wisely.</p>
 <div class="type-strip">
-    <span class="tbadge tb-ninja">🥷 NINJA</span>
-    <span class="tbadge tb-zen">🧘 ZEN</span>
-    <span class="tbadge tb-oba">👵 OBAACHAN</span>
-    <span class="tbadge tb-tsun">💢 TSUNDERE</span>
-    <span class="tbadge tb-sam">⚔ 侍 SAMURAI</span>
+  <div class="tbadge tb-ninja">
+    <span class="tb-name">🥷 NINJA</span>
+    <span class="tb-desc">indirect · clever · unseen</span>
   </div>
+  <div class="tbadge tb-zen">
+    <span class="tb-name">🧘 ZEN</span>
+    <span class="tb-desc">calm · philosophical · transcended</span>
+  </div>
+  <div class="tbadge tb-oba">
+    <span class="tb-name">👵 OBAACHAN</span>
+    <span class="tb-desc">warm · guilt-tripping · ara ara</span>
+  </div>
+  <div class="tbadge tb-tsun">
+    <span class="tb-name">💢 TSUNDERE</span>
+    <span class="tb-desc">cold outside · soft inside</span>
+  </div>
+  <div class="tbadge tb-sam">
+    <span class="tb-name">⚔ 侍 SAMURAI</span>
+    <span class="tb-desc">honor · steel · ancient wisdom</span>
+  </div>
+</div>
 </section>
 
 <div class="meter-wrap">
