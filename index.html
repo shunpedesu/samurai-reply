@@ -102,9 +102,9 @@ body::before {
   font-size: 1.6rem;
   letter-spacing: 0.06em;
   color: var(--text);
-  text-shadow: 0 0 20px rgba(255,45,85,0.6), 0 0 40px rgba(255,45,85,0.3);
+  text-shadow: 0 0 20px rgba(200,160,64,0.5), 0 0 40px rgba(200,160,64,0.2);
 }
-.logo em { font-style: normal; color: var(--neon-r); }
+.logo em { font-style: normal; color: var(--sam); }
 
 .nav-right { display: flex; align-items: center; gap: 10px; }
 .nav-uses {
@@ -139,21 +139,22 @@ body::before {
   margin-bottom: 0.3rem;
 }
 .hero-label {
-  font-size: 0.6rem; color: var(--neon-g); letter-spacing: 0.18em; line-height: 2;
-  text-shadow: 0 0 8px rgba(0,255,136,0.5);
+  font-size: 0.6rem; color: var(--sam); letter-spacing: 0.18em; line-height: 2;
+  text-shadow: 0 0 8px rgba(200,160,64,0.4);
+  opacity: 0.85;
 }
 
 h1 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(3.2rem, 9vw, 5.5rem);
-  line-height: 0.92;
+  font-size: clamp(2.6rem, 7.5vw, 4.8rem);
+  line-height: 0.95;
   letter-spacing: 0.03em;
   margin-bottom: 1rem;
 }
 .h1-white { color: var(--text); display: block; }
-.h1-red {
-  color: var(--neon-r); display: block;
-  text-shadow: 0 0 30px rgba(255,45,85,0.7), 0 0 60px rgba(255,45,85,0.3);
+.h1-gold {
+  color: var(--sam); display: block;
+  text-shadow: 0 0 30px rgba(200,160,64,0.5), 0 0 60px rgba(200,160,64,0.2);
 }
 
 .hero-desc {
@@ -234,8 +235,8 @@ h1 {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .input-panel:focus-within {
-  border-color: rgba(0,207,255,0.4);
-  box-shadow: 0 0 0 3px rgba(0,207,255,0.06), 0 0 20px rgba(0,207,255,0.05);
+  border-color: rgba(200,160,64,0.4);
+  box-shadow: 0 0 0 3px rgba(200,160,64,0.06), 0 0 20px rgba(200,160,64,0.06);
 }
 
 /* Tab bar */
@@ -249,7 +250,7 @@ h1 {
   transition: all 0.13s; border-bottom: 2px solid transparent;
   line-height: 1.8; white-space: nowrap;
 }
-.itab.active { color: var(--neon-b); border-bottom-color: var(--neon-b); background: rgba(0,207,255,0.04); }
+.itab.active { color: var(--sam); border-bottom-color: var(--sam); background: rgba(200,160,64,0.04); }
 .itab:hover:not(.active) { color: var(--text); }
 
 /* Text pane */
@@ -314,14 +315,13 @@ textarea::placeholder { color: var(--muted); }
 .char-ct { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.06em; line-height: 2; }
 .gen-btn {
   font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 700;
-  background: var(--neon-r); color: #fff; border: none;
+  background: var(--sam); color: #08080c; border: none;
   border-radius: 4px; padding: 10px 22px; cursor: pointer;
   letter-spacing: 0.06em;
-  text-shadow: 0 0 10px rgba(255,45,85,0.5);
-  box-shadow: 0 0 20px rgba(255,45,85,0.25);
+  box-shadow: 0 0 20px rgba(200,160,64,0.35);
   transition: all 0.15s; white-space: nowrap;
 }
-.gen-btn:hover { box-shadow: 0 0 30px rgba(255,45,85,0.4); transform: translateY(-1px); }
+.gen-btn:hover { box-shadow: 0 0 32px rgba(200,160,64,0.55); transform: translateY(-1px); }
 .gen-btn:active { transform: translateY(0); }
 .gen-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
 
@@ -333,8 +333,8 @@ textarea::placeholder { color: var(--muted); }
   border-radius: 1px; overflow: hidden;
 }
 .ld-bar-fill {
-  height: 100%; width: 0; background: var(--neon-r);
-  box-shadow: 0 0 8px var(--neon-r);
+  height: 100%; width: 0; background: var(--sam);
+  box-shadow: 0 0 8px var(--sam);
   animation: ldprogress 3s ease-in-out infinite;
 }
 @keyframes ldprogress {
@@ -638,10 +638,11 @@ textarea::placeholder { color: var(--muted); }
     <span class="hero-label">// PASTE · GENERATE · SEND OR DON'T</span>
   </div>
   <h1>
-    <span class="h1-white">THE REPLY</span>
-    <span class="h1-red">YOU COULDN'T WRITE.</span>
+    <span class="h1-white">EVERY MESSAGE</span>
+    <span class="h1-white">DESERVES</span>
+    <span class="h1-gold">A WORTHY REPLY.</span>
   </h1>
-  <p class="hero-desc">Paste any awkward text — or screenshot it. Get 5 replies in seconds. Ninja · Zen · Obaachan · Tsundere · Samurai.</p>
+  <p class="hero-desc">Five characters. One chance. Choose wisely.</p>
   <div class="type-strip">
     <span class="tbadge tb-ninja">🥷 NINJA</span>
     <span class="tbadge tb-zen">🧘 ZEN</span>
