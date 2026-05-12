@@ -130,7 +130,7 @@ body::before {
 /* HERO */
 .hero {
   max-width: 680px; margin: 0 auto;
-  padding: 3rem 1.5rem 0;
+  padding: 1.6rem 1.5rem 0;
   position: relative; z-index: 1;
 }
 
@@ -146,10 +146,10 @@ body::before {
 
 h1 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(2.6rem, 7.5vw, 4.8rem);
+  font-size: clamp(2.2rem, 6.5vw, 4rem);
   line-height: 0.95;
   letter-spacing: 0.03em;
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
 }
 .h1-white { color: var(--text); display: block; }
 .h1-gold {
@@ -159,14 +159,14 @@ h1 {
 
 .hero-desc {
   font-size: 0.78rem; color: #887e90; line-height: 1.8;
-  max-width: 420px; margin-bottom: 1.5rem;
+  max-width: 420px; margin-bottom: 0.8rem;
 }
 
 
 /* TYPE BADGES */
 .type-strip {
   display: flex; flex-wrap: wrap; gap: 6px;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 .tbadge {
   font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em;
@@ -216,16 +216,6 @@ h1 {
 }
 .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* PRESETS */
-.presets { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 1.4rem; }
-.preset {
-  font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
-  background: var(--surface); border: 1px solid var(--border2);
-  color: #a098b0; padding: 7px 14px; border-radius: 4px;
-  cursor: pointer; transition: all 0.13s; letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-.preset:hover { border-color: var(--neon-b); color: var(--neon-b); background: rgba(0,207,255,0.05); }
 
 /* INPUT AREA */
 .input-panel {
@@ -663,16 +653,6 @@ textarea::placeholder { color: var(--muted); }
 </div>
 
 <div class="main">
-  <p class="sec-label">PRESETS</p>
-  <div class="presets">
-    <button class="preset" onclick="loadP(0)">Left on read</button>
-    <button class="preset" onclick="loadP(1)">Flaky friend cancelled</button>
-    <button class="preset" onclick="loadP(2)">Impossible boss request</button>
-    <button class="preset" onclick="loadP(3)">Ex texted out of nowhere</button>
-    <button class="preset" onclick="loadP(4)">Friend won't stop venting</button>
-  </div>
-
-  <p class="sec-label">INPUT</p>
   <div class="input-panel">
     <!-- Tab bar -->
     <div class="input-tabs">
@@ -752,13 +732,6 @@ textarea::placeholder { color: var(--muted); }
 </div>
 
 <script>
-const PRESETS=[
-  "Hey, I saw you read my message from yesterday but never replied. Is everything okay? I was just asking if you wanted to hang this weekend, no pressure.",
-  "Ugh I'm so sorry, I totally can't make it tonight. Something came up last minute. You know how it is! Rain check?",
-  "Hey can you have the full Q3 report done by 8am tomorrow? Also you'll need to present it to the exec team. Really appreciate it! — sent at 7:30pm",
-  "Heyyyy stranger 👀 it's been forever. How are you doing? I know this is super random but I was literally just thinking about you lol",
-  "I genuinely cannot deal anymore. My job is a nightmare, my roommate is insufferable, and I think my cat hates me. Can we talk? I really need to vent."
-];
 const TYPES=[
   {key:'ninja',   cls:'card-ninja', pill:'cp-ninja', label:'🥷 NINJA',      tone:'indirect · clever · unseen blade'},
   {key:'zen',     cls:'card-zen',   pill:'cp-zen',   label:'🧘 ZEN',        tone:'transcended · philosophically calm'},
@@ -860,7 +833,6 @@ dropArea.addEventListener('drop', ev => {
 });
 
 // --- utils ---
-function loadP(i){ document.getElementById('msg').value=PRESETS[i]; if(activeTab!=='text') switchTab('text', document.querySelectorAll('.itab')[0]); upd(); }
 function upd(){ document.getElementById('cc').textContent=document.getElementById('msg').value.length+' CHARS'; }
 function rst(){ document.getElementById('msg').value=''; document.getElementById('res').classList.remove('on'); document.getElementById('err').classList.remove('on'); document.getElementById('gbtn').disabled=false; upd(); }
 function closeWall(){ document.getElementById('wall-bg').classList.remove('on'); }
