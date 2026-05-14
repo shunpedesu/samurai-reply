@@ -366,6 +366,15 @@ textarea::placeholder { color: var(--muted); }
   cursor: pointer; transition: all 0.13s; letter-spacing: 0.06em; line-height: 1.8;
 }
 .retry-btn:hover { color: var(--text); border-color: var(--border2); }
+.share-x-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em;
+  background: none; border: 1px solid rgba(200,160,64,0.45); color: var(--sam);
+  border-radius: 4px; padding: 5px 12px; cursor: pointer;
+  transition: all 0.15s; line-height: 1.8;
+}
+.share-x-btn:hover { background: rgba(200,160,64,0.08); border-color: var(--sam); }
+.res-actions { display: flex; align-items: center; gap: 8px; }
 
 /* CARDS */
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -465,7 +474,15 @@ textarea::placeholder { color: var(--muted); }
 @keyframes popIn { from{opacity:0;transform:scale(0.96)} to{opacity:1;transform:scale(1)} }
 
 .wall-top { margin-bottom: 1.25rem; }
-.wall-eye { font-size: 0.58rem; color: var(--neon-r); letter-spacing: 0.14em; margin-bottom: 8px; line-height: 2; text-shadow: 0 0 8px rgba(255,45,85,0.4); }
+.wall-eye { font-size: 0.72rem; color: var(--sam); letter-spacing: 0.04em; margin-bottom: 14px; line-height: 1.6; text-shadow: 0 0 12px rgba(200,160,64,0.4); font-weight: 600; }
+.wall-cta-btn {
+  display: block; width: 100%; margin-bottom: 16px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em;
+  background: var(--sam); color: #08080c; border: none; border-radius: 4px;
+  padding: 12px 0; cursor: pointer;
+  box-shadow: 0 0 20px rgba(200,160,64,0.35); transition: all 0.15s;
+}
+.wall-cta-btn:hover { box-shadow: 0 0 32px rgba(200,160,64,0.55); transform: translateY(-1px); }
 .wall h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.04em; line-height: 1; margin-bottom: 6px; }
 .wall h2 em { font-style: normal; color: var(--neon-y); text-shadow: 0 0 16px rgba(255,214,10,0.5); }
 .wall-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.75; }
@@ -649,7 +666,7 @@ textarea::placeholder { color: var(--muted); }
   </div>
   <div class="tbadge tb-oba">
     <span class="tb-name">👵 OBAACHAN</span>
-    <span class="tb-desc">warm · guilt-tripping · ara ara</span>
+    <span class="tb-desc">warm · guilt-tripping · overly concerned</span>
   </div>
   <div class="tbadge tb-tsun">
     <span class="tb-name">💢 TSUNDERE</span>
@@ -690,7 +707,7 @@ textarea::placeholder { color: var(--muted); }
         <input type="file" accept="image/*" id="img-input" onchange="handleImg(this.files[0])">
         <div class="upload-icon">⊞</div>
         <div class="upload-text">TAP TO UPLOAD SCREENSHOT</div>
-        <div class="upload-sub">PNG · JPG · WEBP — text will be extracted automatically</div>
+        <div class="upload-sub">Upload a screenshot of any message — AI reads the text automatically</div>
       </div>
       <div class="img-preview-wrap" id="preview-wrap">
         <img class="img-preview" id="preview-img" src="" alt="">
@@ -714,7 +731,10 @@ textarea::placeholder { color: var(--muted); }
   <div class="res" id="res">
     <div class="res-header">
       <span class="res-lbl">// 5 REPLIES READY</span>
-      <button class="retry-btn" onclick="rst()">← TRY ANOTHER</button>
+      <div class="res-actions">
+        <button class="share-x-btn" onclick="shareOnX()">𝕏 SHARE</button>
+        <button class="retry-btn" onclick="rst()">← TRY ANOTHER</button>
+      </div>
     </div>
     <div class="grid" id="grid"></div>
   </div>
@@ -724,7 +744,8 @@ textarea::placeholder { color: var(--muted); }
 <div class="wall-bg" id="wall-bg" onclick="bgDismiss(event)">
   <div class="wall">
     <div class="wall-top">
-      <p class="wall-eye" id="wall-eye-txt">// FREE LIMIT REACHED — 3/3 USED</p>
+      <p class="wall-eye" id="wall-eye-txt">⚔️ Your 3 free replies have been spent. The samurai demands tribute.</p>
+      <button class="wall-cta-btn" onclick="document.querySelector('.plans-wrap').scrollIntoView({behavior:'smooth'})">GET CREDITS →</button>
       <h2>TOP UP<br><em>CREDITS</em></h2>
       <p class="wall-desc">Pay once, use at your own pace. No subscriptions.</p>
     </div>
@@ -746,7 +767,7 @@ textarea::placeholder { color: var(--muted); }
         <button class="plan-btn standard-btn" onclick="handlePayment(event,'standard')">BUY 500 →</button>
       </div>
     </div>
-    <button class="wall-no" onclick="closeWall()">No thanks, I'll stick with 3 free per day</button>
+    <button class="wall-no" onclick="closeWall()">No thanks, I only need 3 replies total</button>
   </div>
 </div>
 
@@ -949,7 +970,16 @@ async function gen(){
   }
 }
 
+let _lastP = null;
+function shareOnX(){
+  if(!_lastP) return;
+  const preview = (_lastP.samurai||'').slice(0,20);
+  const tweet = `Just got a reply from a samurai ⚔️\n"${preview}..."\n\nsamurai-reply.vercel.app`;
+  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),'_blank');
+}
+
 function render(p){
+  _lastP = p;
   const grid=document.getElementById('grid');
   grid.innerHTML='';
   TYPES.forEach(t=>{
@@ -1032,7 +1062,7 @@ async function checkCreditsOnLoad() {
 // ── Update paywall eye text when opening ─────────────────────────────────────
 function openWall() {
   if(userCredits<=0 && used>=FREE_MAX) {
-    document.getElementById('wall-eye-txt').textContent = '// FREE LIMIT REACHED — 3/3 USED';
+    document.getElementById('wall-eye-txt').textContent = '⚔️ Your 3 free replies have been spent. The samurai demands tribute.';
   } else if(userCredits===0) {
     document.getElementById('wall-eye-txt').textContent = '// OUT OF CREDITS';
   } else {
