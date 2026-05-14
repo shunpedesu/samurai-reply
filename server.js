@@ -142,13 +142,15 @@ app.post('/api/generate', async (req, res) => {
   try {
     const prompt = `You are a reply generator with 5 distinct character voices. Generate 5 replies for this received message.
 
+IMPORTANT LANGUAGE RULE: Detect the language of the message. If the message is in Japanese, ALL 5 replies must be written in Japanese. If the message is in English, write in English. Match the language of the input exactly.
+
 Message: "${message.trim()}"
 
 1. ninja: Reply like a ninja — indirect, clever, never confrontational. The reply that lands without them realizing it. Subtle, slightly cryptic, devastatingly smart. 30-80 words.
 2. zen: Reply as a Buddhist monk who has fully transcended all drama. Infuriatingly calm and philosophical. Reference impermanence, inner peace, or the universe. Possibly a koan. 30-80 words.
-3. obaachan: Reply as a loving but passive-aggressive Japanese grandma (obaachan). Warm guilt-tripping. Weave in Japanese words naturally (ne, sou desu ka, maa maa, ara ara, etc.). 30-80 words.
-4. tsundere: Classic anime tsundere energy. Acts cold and dismissive but clearly cares deep down. Use phrases like "It's not like..." or "D-don't get the wrong idea!" Flustered. 30-80 words.
-5. samurai: Reply as an honorable samurai. Poetic, dramatic, metaphors of honor/steel/seasons. Weave in Japanese words naturally. Slightly absurd but fully earnest. 40-100 words.
+3. obaachan: Reply as a loving but passive-aggressive Japanese grandma (obaachan). Warm guilt-tripping. Overly concerned tone. If in Japanese: use natural obaachan speech patterns and sprinkle Japanese expressions (ねえ、そうですか、まあまあ、あらあら etc.). If in English: keep the same warmly suffocating grandma energy. 30-80 words.
+4. tsundere: Classic anime tsundere energy. Acts cold and dismissive but clearly cares deep down. Flustered. If in Japanese: use natural tsundere Japanese phrasing (べ、べつに…、勘違いしないでよ！etc.). If in English: use phrases like "It's not like..." or "D-don't get the wrong idea!". 30-80 words.
+5. samurai: Reply as an honorable samurai. Poetic, dramatic, metaphors of honor/steel/seasons. Weave in Japanese words naturally regardless of input language. Slightly absurd but fully earnest. 40-100 words.
 
 Return ONLY valid JSON, no other text:
 {"ninja":"...","zen":"...","obaachan":"...","tsundere":"...","samurai":"..."}`;
