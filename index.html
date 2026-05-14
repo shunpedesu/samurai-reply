@@ -747,7 +747,7 @@ textarea::placeholder { color: var(--muted); }
     </div>
     <div class="grid" id="grid"></div>
     <div class="res-footer">
-      <button class="share-x-btn" onclick="shareOnX()">𝕏 &nbsp;SHARE ON X</button>
+      <button class="share-x-btn" id="share-x-btn" onclick="shareOnX()">𝕏 &nbsp;SHARE ON X</button>
       <button class="retry-btn retry-btn-lg" onclick="rst()">← TRY ANOTHER MESSAGE</button>
     </div>
   </div>
@@ -983,16 +983,15 @@ async function gen(){
   }
 }
 
-let _lastP = null;
 function shareOnX(){
-  if(!_lastP) return;
-  const preview = (_lastP.samurai||'').slice(0,20);
-  const tweet = `Just got a reply from a samurai ⚔️\n"${preview}..."\n\nsamurai-reply.vercel.app`;
-  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),'_blank');
+  const btn = document.getElementById('share-x-btn');
+  const samurai = btn ? btn.dataset.samurai : '';
+  const preview = samurai.slice(0, 25).trim();
+  const tweet = 'Just got a reply from a samurai ⚔️\n"' + preview + '..."\n\nsamurai-reply.vercel.app';
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweet), '_blank');
 }
 
 function render(p){
-  _lastP = p;
   const grid=document.getElementById('grid');
   grid.innerHTML='';
   TYPES.forEach(t=>{
@@ -1012,6 +1011,9 @@ function render(p){
       </div>`;
     grid.appendChild(card);
   });
+  // Store samurai text directly on share button
+  const shareBtn = document.getElementById('share-x-btn');
+  if(shareBtn) shareBtn.dataset.samurai = p.samurai || '';
   document.getElementById('res').classList.add('on');
 }
 
