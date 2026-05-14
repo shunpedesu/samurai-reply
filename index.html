@@ -988,7 +988,12 @@ function shareOnX(){
   const samurai = btn ? btn.dataset.samurai : '';
   const preview = samurai.slice(0, 25).trim();
   const tweet = 'Just got a reply from a samurai ⚔️\n"' + preview + '..."\n\nsamurai-reply.vercel.app';
-  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweet), '_blank');
+  // Use native share sheet on mobile if available
+  if(navigator.share){
+    navigator.share({ text: tweet }).catch(()=>{});
+  } else {
+    window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweet), '_blank');
+  }
 }
 
 function render(p){
