@@ -164,7 +164,7 @@ Return ONLY valid JSON, no other text:
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 1200,
+        max_tokens: 2500,
         messages: [{ role: 'user', content: prompt }],
       }),
     });
@@ -177,7 +177,13 @@ Return ONLY valid JSON, no other text:
     const raw = data.content?.[0]?.text || '';
     const match = raw.match(/\{[\s\S]*\}/);
     if (!match) throw new Error('Parse failed');
-    const replies = JSON.parse(match[0]);
+    let replies;
+    try {
+      replies = JSON.parse(match[0]);
+    } catch(parseErr) {
+      console.error('JSON parse error — raw response may be truncated. raw length:', raw.length);
+      throw new Error('Response was cut off. Please try again.');
+    }
 
     // Only count free usage AFTER successful generation
     if (req._freeKey) {
