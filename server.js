@@ -140,7 +140,15 @@ app.post('/api/generate', async (req, res) => {
 
   // Call Anthropic API
   try {
-    const prompt = `You are a reply generator. Generate 5 GENUINELY DIFFERENT replies to the message below.
+    const prompt = `You are a response generator for a tool that handles TWO types of input:
+TYPE A — a message the user RECEIVED and wants to reply to.
+TYPE B — a situation, worry, or vent the user wants PERSPECTIVE on (not a reply to send).
+
+Detect which type this is and respond accordingly:
+- Type A: generate replies the user could SEND back.
+- Type B: generate responses that offer perspective, comfort, advice, or reframing — as if each character is speaking directly TO the user.
+
+Either way, generate 5 GENUINELY DIFFERENT responses.
 
 CRITICAL RULE — DIFFERENT CONTENT, NOT JUST DIFFERENT TONE:
 Each character must approach the situation from a completely different angle. They should focus on different aspects, give different advice, ask different questions, or reach different conclusions. Do NOT have all 5 characters say the same thing in different styles. A reader should feel like they got 5 distinct perspectives, not 1 perspective repeated 5 times.
