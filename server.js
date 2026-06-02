@@ -50,6 +50,49 @@ app.get('/api/stripe/link', (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 2a. POST /api/bonus-email — +3 credits for email signup (once per email)
+// ─────────────────────────────────────────────────────────────────────────────
+app.post('/api/bonus-email', async (req, res) => {
+  const { email } = req.body;
+  if (!email || !email.includes('@')) return res.status(400).json({ error: 'Invalid email' });
+  const clean = email.toLowerCase().trim();
+  try {
+    const { rows } = await pool.query('SELECT count FROM free_usage WHERE key = $1', [`email_bonus:${clean}`]);
+    if (rows[0]?.count >= 1) {
+      const cr = await pool.query('SELECT credits FROM user_credits WHERE email = $1', [clean]);
+      return res.json({ success: false, already: true, credits: parseInt(cr.rows[0]?.credits || 0) });
+    }
+    await pool.query(
+      `INSERT INTO free_usage (key, count, updated_at) VALUES ($1, 1, NOW()) ON CONFLICT (key) DO UPDATE SET count=1, updated_at=NOW()`,
+      [`email_bonus:${clean}`]);
+    const result = await pool.query(
+      `INSERT INTO user_credits (email, credits, created_at, updated_at) VALUES ($1,3,NOW(),NOW())
+       ON CONFLICT (email) DO UPDATE SET credits=user_credits.credits+3, updated_at=NOW() RETURNING credits`,
+      [clean]);
+    res.json({ success: true, credits: parseInt(result.rows[0].credits) });
+  } catch (err) { console.error('Email bonus error:', err); res.status(500).json({ error: 'Server error' }); }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 2b. POST /api/bonus-share — +2 free uses for sharing (once per IP per day)
+// ─────────────────────────────────────────────────────────────────────────────
+app.post('/api/bonus-share', async (req, res) => {
+  const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    const { rows } = await pool.query('SELECT count FROM free_usage WHERE key = $1', [`share_bonus:${ip}:${today}`]);
+    if (rows[0]?.count >= 1) return res.json({ success: false, already: true });
+    await pool.query(
+      `INSERT INTO free_usage (key, count, updated_at) VALUES ($1,1,NOW()) ON CONFLICT (key) DO UPDATE SET count=1, updated_at=NOW()`,
+      [`share_bonus:${ip}:${today}`]);
+    await pool.query(
+      `UPDATE free_usage SET count=GREATEST(0,count-2), updated_at=NOW() WHERE key=$1`,
+      [`free:${ip}:${today}`]);
+    res.json({ success: true, bonus: 2 });
+  } catch (err) { console.error('Share bonus error:', err); res.status(500).json({ error: 'Server error' }); }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // 2. POST /api/check-credits
 //    Body: { email: string }
 //    Returns: { credits: number }

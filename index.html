@@ -517,6 +517,19 @@ textarea::placeholder { color: var(--muted); }
   transition: color 0.13s; letter-spacing: 0.04em; line-height: 2;
 }
 .wall-no:hover { color: var(--text); }
+.email-bonus { background: rgba(200,160,64,0.06); border: 1px solid rgba(200,160,64,0.25); border-radius: 6px; padding: 14px 16px; margin-bottom: 16px; }
+.email-bonus-lbl { font-size: 0.68rem; font-weight: 700; color: var(--sam); letter-spacing: 0.06em; margin-bottom: 10px; }
+.email-bonus-row { display: flex; gap: 8px; }
+.email-bonus-input { flex: 1; background: #1a1825; border: 1px solid var(--border2); color: var(--text); border-radius: 4px; padding: 8px 12px; font-family: 'IBM Plex Mono',monospace; font-size: 0.72rem; outline: none; }
+.email-bonus-input:focus { border-color: rgba(200,160,64,0.5); }
+.email-bonus-btn { font-family: 'IBM Plex Mono',monospace; font-size: 0.68rem; font-weight: 700; background: var(--sam); color: #08080c; border: none; border-radius: 4px; padding: 8px 14px; cursor: pointer; letter-spacing: 0.06em; transition: all 0.15s; white-space: nowrap; }
+.email-bonus-msg { font-size: 0.62rem; color: var(--muted); margin-top: 8px; min-height: 1em; }
+.share-toast { display: none; margin-top: 12px; background: rgba(0,207,255,0.08); border: 1px solid rgba(0,207,255,0.3); border-radius: 6px; padding: 12px 16px; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.share-toast.on { display: flex; }
+.share-toast span { font-size: 0.72rem; color: var(--text); }
+.share-toast-btn { font-family: 'IBM Plex Mono',monospace; font-size: 0.65rem; font-weight: 700; background: none; border: 1px solid rgba(0,207,255,0.5); color: var(--hero); border-radius: 4px; padding: 6px 12px; cursor: pointer; letter-spacing: 0.06em; transition: all 0.15s; }
+.share-toast-btn:hover { background: rgba(0,207,255,0.1); }
+.share-toast-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* LIFETIME CARD */
 .lifetime-card {
@@ -748,6 +761,10 @@ textarea::placeholder { color: var(--muted); }
     <div class="grid" id="grid"></div>
     <div class="res-footer">
       <button class="share-x-btn" id="share-x-btn" onclick="shareOnX()">𝕏 &nbsp;SHARE ON X</button>
+      <div class="share-toast" id="share-toast">
+        <span>🎉 Thanks for sharing!</span>
+        <button class="share-toast-btn" id="share-toast-btn" onclick="claimShareBonus()">Claim +2 free uses →</button>
+      </div>
       <button class="retry-btn retry-btn-lg" onclick="rst()">← TRY ANOTHER MESSAGE</button>
     </div>
   </div>
@@ -762,6 +779,16 @@ textarea::placeholder { color: var(--muted); }
       <h2>TOP UP<br><em>CREDITS</em></h2>
       <p class="wall-desc">Pay once, use at your own pace. No subscriptions.</p>
     </div>
+    <!-- Email bonus -->
+    <div class="email-bonus" id="email-bonus">
+      <p class="email-bonus-lbl">✨ FREE BONUS — Get 3 extra uses</p>
+      <div class="email-bonus-row">
+        <input type="email" id="bonus-email-input" class="email-bonus-input" placeholder="your@email.com"/>
+        <button class="email-bonus-btn" onclick="claimEmailBonus()">CLAIM →</button>
+      </div>
+      <p class="email-bonus-msg" id="email-bonus-msg"></p>
+    </div>
+
     <div class="plans-wrap">
       <!-- Starter -->
       <div class="plan-card">
@@ -780,7 +807,7 @@ textarea::placeholder { color: var(--muted); }
         <button class="plan-btn standard-btn" onclick="handlePayment(event,'standard')">BUY 500 →</button>
       </div>
     </div>
-    <button class="wall-no" onclick="closeWall()">No thanks, I only need 3 replies total</button>
+    <button class="wall-no" onclick="closeWall()">No thanks, I'll come back tomorrow</button>
   </div>
 </div>
 
@@ -795,7 +822,13 @@ const TYPES=[
 const LOADS=["THINKING…","SUMMONING THE SAMURAI…","CONSULTING THE ZEN MASTER…","ARA ARA, PLEASE WAIT…","ALMOST DONE…"];
 
 const FREE_MAX=3;
-let used=0;          // free uses today
+// Daily reset: track used count per day in localStorage
+const _today = new Date().toISOString().slice(0,10);
+if (localStorage.getItem('sr_date') !== _today) {
+  localStorage.setItem('sr_date', _today);
+  localStorage.setItem('sr_used', '0');
+}
+let used = parseInt(localStorage.getItem('sr_used') || '0');
 let userCredits=0;   // paid credits remaining
 let imgExtracted='';
 let activeTab='text';
@@ -910,8 +943,8 @@ function updateMeter(){
     f.style.width=pct+'%';
     f.className='meter-fill'+(pct<=33?' low':pct<=66?' warn':'');
     document.getElementById('mnum').textContent=left+' / '+FREE_MAX;
-    document.getElementById('meter-lbl').textContent='FREE USES';
-    document.getElementById('nav-uses').textContent=left+' FREE LEFT';
+    document.getElementById('meter-lbl').textContent='FREE TODAY';
+    document.getElementById('nav-uses').textContent=left+' FREE TODAY';
     document.getElementById('meter-up-btn').textContent='BUY CREDITS →';
     if(left<=0) document.getElementById('gbtn').disabled=true;
   }
@@ -944,7 +977,7 @@ async function gen(){
       clearInterval(iv);
       document.getElementById('ld').classList.remove('on');
       document.getElementById('gbtn').disabled = false;
-      used = FREE_MAX; // mark as exhausted so correct message shows
+      used = FREE_MAX; localStorage.setItem('sr_used', used);
       updateMeter();
       openWall();
       return;
@@ -962,7 +995,7 @@ async function gen(){
     if (data.usedCredit) {
       userCredits = data.credits;
     } else {
-      used++;
+      used++; localStorage.setItem('sr_used', used);
     }
     updateMeter();
 
@@ -988,12 +1021,63 @@ function shareOnX(){
   const samurai = btn ? btn.dataset.samurai : '';
   const preview = samurai.slice(0, 25).trim();
   const tweet = 'Just got a reply from a samurai ⚔️\n"' + preview + '..."\n\nsamurai-reply.vercel.app';
-  // Use native share sheet on mobile if available
   if(navigator.share){
     navigator.share({ text: tweet }).catch(()=>{});
   } else {
     window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweet), '_blank');
   }
+  // Show share bonus toast
+  document.getElementById('share-toast').classList.add('on');
+}
+
+async function claimShareBonus(){
+  const btn = document.getElementById('share-toast-btn');
+  btn.disabled = true; btn.textContent = 'Claiming...';
+  try {
+    const r = await fetch(API_BASE + '/api/bonus-share', { method:'POST', headers:{'Content-Type':'application/json'} });
+    const data = await r.json();
+    if(data.success){
+      used = Math.max(0, used - 2);
+      localStorage.setItem('sr_used', used);
+      updateMeter();
+      btn.textContent = '✓ +2 uses added!';
+      setTimeout(()=>{ document.getElementById('share-toast').classList.remove('on'); }, 3000);
+    } else {
+      btn.textContent = data.already ? 'Already claimed today' : 'Try again';
+      btn.disabled = false;
+    }
+  } catch(e){ btn.textContent = 'Try again'; btn.disabled = false; }
+}
+
+async function claimEmailBonus(){
+  const emailEl = document.getElementById('bonus-email-input');
+  const msgEl = document.getElementById('email-bonus-msg');
+  const email = emailEl.value.trim();
+  if(!email || !email.includes('@')){ msgEl.textContent = 'Please enter a valid email.'; return; }
+  msgEl.textContent = 'Claiming...';
+  try {
+    const r = await fetch(API_BASE + '/api/bonus-email', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ email })
+    });
+    const data = await r.json();
+    localStorage.setItem('samurai-reply_email', email);
+    if(data.success){
+      userCredits = data.credits;
+      updateMeter();
+      msgEl.textContent = '✓ 3 bonus uses added! Enjoy ⚔️';
+      document.getElementById('email-bonus').style.opacity = '0.5';
+      document.getElementById('email-bonus').style.pointerEvents = 'none';
+      setTimeout(closeWall, 1500);
+    } else if(data.already){
+      userCredits = data.credits || 0;
+      updateMeter();
+      msgEl.textContent = data.credits > 0 ? '✓ Bonus already claimed — credits loaded!' : 'This email has already claimed the bonus.';
+      if(data.credits > 0) setTimeout(closeWall, 1500);
+    } else {
+      msgEl.textContent = 'Something went wrong. Try again.';
+    }
+  } catch(e){ msgEl.textContent = 'Something went wrong. Try again.'; }
 }
 
 function render(p){
