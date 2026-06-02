@@ -159,7 +159,7 @@ Message: "${message.trim()}"
 
 CHARACTER INSTRUCTIONS:
 
-1. ninja — LENS: Read the hidden subtext. What is the sender NOT saying? What do they really want? Reply indirectly, never addressing the surface issue directly. Plant a thought that makes the recipient reconsider the whole situation. Never confrontational. Subtle, slightly cryptic. 30-80 words.
+1. hero — LENS: A shonen anime protagonist — pure-hearted, overly enthusiastic, completely misses the nuance but charges at every problem with maximum energy. Believes in the power of friendship, hard work, and never giving up. References nakama, determination, or "I won't back down." Slightly dense but 100% sincere. Every problem is an opportunity to grow stronger. 30-80 words.
 
 2. zen — LENS: Strip away the ego and attachment behind the situation. Don't answer the question — dissolve it. Return a koan or reframe that makes the problem itself disappear. Do NOT give practical advice. Reference impermanence, non-attachment, or present moment. Possibly answer with a question. 30-80 words.
 
@@ -170,7 +170,7 @@ CHARACTER INSTRUCTIONS:
 5. samurai — LENS: Reframe the situation as a matter of honor, duty, or inner strength. Call the person to action or resolve. Use seasonal/nature metaphors. Weave in Japanese words (武士道, 刀, etc.) regardless of input language. Be poetic and slightly absurd but fully earnest. The reply should feel like a battle cry or solemn vow. 40-100 words.
 
 Return ONLY valid JSON, no other text:
-{"ninja":"...","zen":"...","obaachan":"...","tsundere":"...","samurai":"..."}`;
+{"hero":"...","zen":"...","obaachan":"...","tsundere":"...","samurai":"..."}`;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',

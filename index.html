@@ -47,7 +47,7 @@
   --neon-y: #ffd60a;
   --neon-p: #bf5af2;
   --err:  #ff3b1a;
-  --ninja:  #00cfff;
+  --hero:   #00cfff;
   --zen:    #bf5af2;
   --oba:    #ffb347;
   --tsun:   #ff4d8d;
@@ -181,7 +181,7 @@ h1 {
   font-size: 0.52rem; font-weight: 400; letter-spacing: 0.03em;
   line-height: 1.4; opacity: 0.65; white-space: nowrap;
 }
-.tb-ninja  { color: var(--ninja);  border-color: var(--ninja);  background: rgba(0,207,255,0.06);  text-shadow: 0 0 6px rgba(0,207,255,0.4); }
+.tb-hero   { color: var(--hero);   border-color: var(--hero);   background: rgba(0,207,255,0.06);  text-shadow: 0 0 6px rgba(0,207,255,0.4); }
 .tb-zen    { color: var(--zen);    border-color: var(--zen);    background: rgba(191,90,242,0.06); text-shadow: 0 0 6px rgba(191,90,242,0.4); }
 .tb-oba    { color: var(--oba);    border-color: var(--oba);    background: rgba(255,179,71,0.06);  text-shadow: 0 0 6px rgba(255,179,71,0.4); }
 .tb-tsun   { color: var(--tsun);   border-color: var(--tsun);   background: rgba(255,77,141,0.06);  text-shadow: 0 0 6px rgba(255,77,141,0.4); }
@@ -405,7 +405,7 @@ textarea::placeholder { color: var(--muted); }
   content: ''; position: absolute; top: 0; left: 0; right: 0;
   height: 2px;
 }
-.card-ninja::before { background: var(--ninja); box-shadow: 0 0 8px var(--ninja); }
+.card-hero::before  { background: var(--hero);  box-shadow: 0 0 8px var(--hero); }
 .card-zen::before   { background: var(--zen);   box-shadow: 0 0 8px var(--zen); }
 .card-oba::before   { background: var(--oba);   box-shadow: 0 0 8px var(--oba); }
 .card-tsun::before  { background: var(--tsun);  box-shadow: 0 0 8px var(--tsun); }
@@ -433,7 +433,7 @@ textarea::placeholder { color: var(--muted); }
   padding: 3px 9px; border-radius: 2px; border: 1px solid;
   white-space: nowrap; flex-shrink: 0; line-height: 1.8;
 }
-.cp-ninja { color: var(--ninja); border-color: rgba(0,207,255,0.4);  background: rgba(0,207,255,0.06); }
+.cp-hero  { color: var(--hero);  border-color: rgba(0,207,255,0.4);  background: rgba(0,207,255,0.06); }
 .cp-zen   { color: var(--zen);   border-color: rgba(191,90,242,0.4); background: rgba(191,90,242,0.06); }
 .cp-oba   { color: var(--oba);   border-color: rgba(255,179,71,0.4); background: rgba(255,179,71,0.06); }
 .cp-tsun  { color: var(--tsun);  border-color: rgba(255,77,141,0.4); background: rgba(255,77,141,0.06); }
@@ -668,9 +668,9 @@ textarea::placeholder { color: var(--muted); }
   </h1>
   <p class="hero-desc">Got a tricky message? Need advice? Just need to vent?<br>Five characters. Five perspectives. Zero judgment.</p>
 <div class="type-strip">
-  <div class="tbadge tb-ninja">
-    <span class="tb-name">🥷 NINJA</span>
-    <span class="tb-desc">indirect · clever · unseen</span>
+  <div class="tbadge tb-hero">
+    <span class="tb-name">⚡ HERO</span>
+    <span class="tb-desc">never give up · nakama · full send</span>
   </div>
   <div class="tbadge tb-zen">
     <span class="tb-name">🧘 ZEN</span>
@@ -786,7 +786,7 @@ textarea::placeholder { color: var(--muted); }
 
 <script>
 const TYPES=[
-  {key:'ninja',   cls:'card-ninja', pill:'cp-ninja', label:'🥷 NINJA',      tone:'indirect · clever · unseen'},
+  {key:'hero',    cls:'card-hero',  pill:'cp-hero',  label:'⚡ HERO',       tone:'never give up · nakama · full send'},
   {key:'zen',     cls:'card-zen',   pill:'cp-zen',   label:'🧘 ZEN',        tone:'calm · philosophical · transcended'},
   {key:'obaachan',cls:'card-oba',   pill:'cp-oba',   label:'👵 OBAACHAN',   tone:'warm · guilt-tripping · overly concerned'},
   {key:'tsundere',cls:'card-tsun',  pill:'cp-tsun',  label:'💢 TSUNDERE',   tone:'cold outside · soft inside'},
